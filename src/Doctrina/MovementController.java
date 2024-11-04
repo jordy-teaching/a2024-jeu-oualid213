@@ -33,6 +33,7 @@ public class MovementController extends Controller {
         if (isUpPressed()) {
             return Direction.UP;
         }
+
         if (isDownPressed()) {
             return Direction.DOWN;
         }

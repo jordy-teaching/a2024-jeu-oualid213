@@ -3,12 +3,19 @@ package Doctrina;
 import java.awt.*;
 
 public abstract class MovableEntity extends StaticEntity {
-    private int speed = 1;
+    private int speed = 100;
     private Direction direction = Direction.DOWN;
     private final Collision collision;
 
     private int lastX = Integer.MIN_VALUE;
     private int lastY = Integer.MIN_VALUE;
+
+    private boolean inAir = true;
+    private boolean inAirPlatform = false;
+    private float verticalVelocity = 0;
+
+    protected Physics physics;
+
     private boolean moved;
 
     public void update() {
@@ -21,12 +28,22 @@ public abstract class MovableEntity extends StaticEntity {
 
     public void move() {
         int allowedSpeed = collision.getAllowedSpeed(direction);
+
+
         x += direction.calculateVelocityX(allowedSpeed);
         y += direction.calculateVelocityY(allowedSpeed);
 
         moved = (x != lastX || y != lastY);
+
         lastX = x;
         lastY = y;
+    }
+
+    public boolean isInAirPlatform() {
+        return inAirPlatform;
+    }
+    public void setInAirPlatform( boolean inAirPlatform){
+        this.inAirPlatform = inAirPlatform;
     }
 
     public boolean hasMoved() {
@@ -38,22 +55,6 @@ public abstract class MovableEntity extends StaticEntity {
         move();
     }
 
-    public void moveUp() {
-        move(Direction.UP);
-    }
-
-    public void moveDown() {
-        move(Direction.DOWN);
-    }
-
-    public void moveLeft() {
-        move(Direction.LEFT);
-    }
-
-    public void moveRight() {
-        move(Direction.RIGHT);
-    }
-
     public Rectangle getHitBox() {
         return switch (direction) {
             case UP -> getUpperHitBox();
@@ -63,20 +64,24 @@ public abstract class MovableEntity extends StaticEntity {
         };
     }
 
+    private Rectangle getAnyHitBox() {
+        return new Rectangle(x + 50 , y + 32, width, height);
+    }
+
     private Rectangle getUpperHitBox() {
-        return new Rectangle(x, y - speed, width, speed);
+        return new Rectangle(x + 50 , y, width, height);
     }
 
     private Rectangle getLowerHitBox() {
-        return new Rectangle(x, y + height, width, speed);
+        return new Rectangle(x + 50 , y, width, height);
     }
 
     private Rectangle getLeftHitBox() {
-        return new Rectangle(x - speed, y, speed, height);
+        return new Rectangle(x + 40 , y, width , height);
     }
 
     private Rectangle getRightHitBox() {
-        return new Rectangle(x + width, y, speed, height);
+        return new Rectangle(x + 60 , y, width, height);
     }
 
     public boolean hitBoxIntersectWith(StaticEntity other) {
@@ -103,7 +108,19 @@ public abstract class MovableEntity extends StaticEntity {
         return direction;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setVerticalVelocity(float verticalVelocity) {
+        this.verticalVelocity = verticalVelocity;
+    }
+
+    public float getVerticalVelocity() {
+        return verticalVelocity;
+    }
+
+    public void setInAir(boolean b) {
+        this.inAir = b;
+    }
+
+    public boolean isInAir() {
+        return inAir;
     }
 }

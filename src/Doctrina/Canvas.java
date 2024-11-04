@@ -29,6 +29,9 @@ public class Canvas {
         graphics.fillRect(x, y, width, height);
     }
 
+    public void drawImage(Image image, int x, int y, int width, int height) {
+        graphics.drawImage(image, x, y, width, height, null);
+    }
     public void drawImage(Image image, int x, int y) {
         graphics.drawImage(image, x, y, null);
     }

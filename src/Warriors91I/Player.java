@@ -1,9 +1,7 @@
-package Viking;
+package Warriors91I;
 
+import Doctrina.*;
 import Doctrina.Canvas;
-import Doctrina.ControllableEntity;
-import Doctrina.Direction;
-import Doctrina.MovementController;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -11,8 +9,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends ControllableEntity {
-    private static final String SPRITE_PATH = "images/player.png";
+    private static final String SPRITE_PATH = "images/player_sprites.png";
     private static final int ANIMATION_SPEED = 8;
+
+    private GamePad gamePad;
+
 
     private BufferedImage image;
     private Image[] rightFrames;
@@ -22,13 +23,17 @@ public class Player extends ControllableEntity {
 
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
-    private int animationStep = 1; // 1 or -1 (reverse) for animation cycle
 
+    private boolean jump = false;
+    private int animationStep = 1;
     public Player(MovementController controller) {
         super(controller);
         setDimension(32, 32);
-        setSpeed(3);
+        setSpeed(10);
+        teleport(300, 300);
         load();
+        gamePad = new GamePad();
+
     }
 
     private void load() {
@@ -37,25 +42,28 @@ public class Player extends ControllableEntity {
     }
 
     private void loadAnimationFrames() {
+        int frameWidth = 64;
+        int frameHeight = 40;
+
         downFrames = new Image[3];
-        downFrames[0] = image.getSubimage(64, 40, width, height);
-        downFrames[1] = image.getSubimage(64, 40, width, height);
-        downFrames[2] = image.getSubimage(64, 40, width, height);
+        downFrames[0] = image.getSubimage(0, 0, frameWidth, frameHeight);
+        downFrames[1] = image.getSubimage(frameWidth, 0, frameWidth, frameHeight);
+        downFrames[2] = image.getSubimage(2 * frameWidth, 0, frameWidth, frameHeight);
 
         leftFrames = new Image[3];
-        leftFrames[0] = image.getSubimage(64, 40, width, height);
-        leftFrames[1] = image.getSubimage(64, 40, width, height);
-        leftFrames[2] = image.getSubimage(64, 40, width, height);
+        leftFrames[0] = image.getSubimage(0, frameHeight, frameWidth, frameHeight);
+        leftFrames[1] = image.getSubimage(frameWidth, frameHeight, frameWidth, frameHeight);
+        leftFrames[2] = image.getSubimage(2 * frameWidth, frameHeight, frameWidth, frameHeight);
 
         rightFrames = new Image[3];
-        rightFrames[0] = image.getSubimage(64, 40, width, height);
-        rightFrames[1] = image.getSubimage(64, 40, width, height);
-        rightFrames[2] = image.getSubimage(64, 40, width, height);
+        rightFrames[0] = image.getSubimage(0, 2 * frameHeight, frameWidth, frameHeight);
+        rightFrames[1] = image.getSubimage(frameWidth, 2 * frameHeight, frameWidth, frameHeight);
+        rightFrames[2] = image.getSubimage(2 * frameWidth, 2 * frameHeight, frameWidth, frameHeight);
 
         upFrames = new Image[3];
-        upFrames[0] = image.getSubimage(64, 40, width, height);
-        upFrames[1] = image.getSubimage(64, 40, width, height);
-        upFrames[2] = image.getSubimage(64, 40, width, height);
+        upFrames[0] = image.getSubimage(0, 3 * frameHeight, frameWidth, frameHeight);
+        upFrames[1] = image.getSubimage(frameWidth, 3 * frameHeight, frameWidth, frameHeight);
+        upFrames[2] = image.getSubimage(2 * frameWidth, 3 * frameHeight, frameWidth, frameHeight);
     }
 
     private void loadSpriteSheet() {
@@ -66,7 +74,7 @@ public class Player extends ControllableEntity {
         }
     }
 
-    @Override
+
     public void update() {
         super.update();
         moveWithController();
@@ -85,16 +93,9 @@ public class Player extends ControllableEntity {
         }
     }
 
+
     @Override
     public void draw(Canvas canvas) {
-        if (getDirection() == Direction.DOWN) {
-            canvas.drawImage(downFrames[currentAnimationFrame], x, y);
-        } else if (getDirection() == Direction.UP) {
-            canvas.drawImage(upFrames[currentAnimationFrame], x, y);
-        } else if (getDirection() == Direction.RIGHT) {
-            canvas.drawImage(rightFrames[currentAnimationFrame], x, y);
-        } else if (getDirection() == Direction.LEFT) {
-            canvas.drawImage(leftFrames[currentAnimationFrame], x, y);
-        }
+        canvas.drawImage(downFrames[currentAnimationFrame], x, y, 64 * 2, 40 * 2);
     }
 }

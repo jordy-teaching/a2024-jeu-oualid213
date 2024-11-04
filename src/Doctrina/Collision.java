@@ -19,11 +19,11 @@ public class Collision {
     }
 
     private int getAllowedUpSpeed() {
-        return distance(other -> entity.y - (other.y + other.height));
+        return distance(other -> 0);
     }
 
     private int getAllowedDownSpeed() {
-        return distance(other -> other.y - (entity.y + entity.height));
+        return distance(other -> entity.y - (other.y + other.height));
     }
 
     private int getAllowedLeftSpeed() {

@@ -42,7 +42,7 @@ public class VikingGame extends Game {
             e.printStackTrace();
         }
 
-        RenderingEngine.getInstance().getScreen().fullscreen();
+      //  RenderingEngine.getInstance().getScreen().fullscreen();
         //RenderingEngine.getInstance().getScreen().hideCursor();
     }
 
