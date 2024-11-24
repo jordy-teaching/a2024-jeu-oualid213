@@ -1,6 +1,7 @@
 package Doctrina;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class Canvas {
 
@@ -28,6 +29,18 @@ public class Canvas {
         graphics.setPaint(paint);
         graphics.fillRect(x, y, width, height);
     }
+    private AffineTransform originalTransform;
+
+    public void saveState() {
+        originalTransform = graphics.getTransform();
+    }
+
+    public void restoreState() {
+        if (originalTransform != null) {
+            graphics.setTransform(originalTransform);
+        }
+    }
+
 
     public void drawImage(Image image, int x, int y, int width, int height) {
         graphics.drawImage(image, x, y, width, height, null);
@@ -35,4 +48,9 @@ public class Canvas {
     public void drawImage(Image image, int x, int y) {
         graphics.drawImage(image, x, y, null);
     }
+    // Méthodes de transformation
+    public void translate(int x, int y) {
+        graphics.translate(x, y);
+    }
+
 }

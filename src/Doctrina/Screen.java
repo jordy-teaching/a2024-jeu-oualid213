@@ -122,6 +122,6 @@ public class Screen {
     private void initializeDevice() {
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         fullscreenDisplayMode = device.getDisplayMode();
-        // windowedDisplayMode = device.getDisplayMode();
+//         windowedDisplayMode = device.getDisplayMode();
     }
 }

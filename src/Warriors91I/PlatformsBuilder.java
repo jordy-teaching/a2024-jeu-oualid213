@@ -3,72 +3,77 @@ package Warriors91I;
 import Doctrina.Canvas;
 import Doctrina.Physics;
 
+import java.util.ArrayList;
+
 public class PlatformsBuilder {
 
-    private Platform[] platforms;
-    private Platform[] airPlatform;
-    private Physics physics;
+    private final ArrayList<Platform> groundPlatforms = new ArrayList<>();
+    private final ArrayList<Platform> wallPlatforms = new ArrayList<>();
+    private final ArrayList<Platform> flyingPlatforms = new ArrayList<>();
+    private final int[][] map;
+    private final ArrayList<Physics> physicsList;
 
-    PlatformsBuilder(Physics physics) {
-        platforms = new Platform[50];
-        airPlatform = new Platform[4];
-        this.physics = physics;
+    public PlatformsBuilder(ArrayList<Physics> physicsList) {
+        this.physicsList = physicsList;
+        this.map = FileLoader.loadCsvFile(55, 50, "resources/IntGrid.csv");
     }
 
-    private void initializeDefaultPlatforms() {
-        int startX = 0;
-        int startY = 400;
+    public void initializeMap() {
+        generatePlatformsFromMap();
+    }
 
-        for (int i = 0; i < platforms.length; i++) {
-            platforms[i] = new Platform(startX + (i * 32), startY);
-        }
-        for (int i = 0; i < airPlatform.length; i++) {
-            airPlatform[i] = new Platform(200, 400 - (i * 32));
+    public void initializePhysics() {
+        applyPhysics(groundPlatforms, false);
+        applyPhysics(flyingPlatforms, true);
+    }
+
+
+    private void generatePlatformsFromMap() {
+        int tileSize = 16;
+        System.out.println(map.length);
+
+
+
+        for (int row = 0; row < map.length; row++) {
+            for (int col = 0; col < map[row].length; col++) {
+                int value = map[row][col];
+                int x = col * tileSize;
+                int y = row * tileSize;
+
+                switch (value) {
+                    case 1 -> groundPlatforms.add(new Platform(x, y, PlatformType.GROUND));
+                    case 2 -> wallPlatforms.add(new Platform(x, y, PlatformType.WALL));
+                    case 3 -> flyingPlatforms.add(new Platform(x, y, PlatformType.ROOF));
+                    case 4 -> flyingPlatforms.add(new Platform(x, y, PlatformType.FLYING));
+                }
+            }
         }
     }
 
-    public Platform[] createHorizontalPlatform(int startX, int startY, int length) {
-        Platform[] horizontalPlatform = new Platform[length];
-        for (int i = 0; i < length; i++) {
-            horizontalPlatform[i] = new Platform(startX + (i * 32), startY);
-        }
-        return horizontalPlatform;
-    }
-
-    public Platform[] createVerticalPlatform(int startX, int startY, int height) {
-        Platform[] verticalPlatform = new Platform[height];
-        for (int i = 0; i < height; i++) {
-            verticalPlatform[i] = new Platform(startX, startY - (i * 32));
-        }
-        return verticalPlatform;
-    }
-
-    public void physicsSetUp(Platform[] platforms, boolean inTheAir) {
-         for (int i = 0 ; i<platforms.length; i++) {
-                for (int j = 0; j < platforms[i].getBlockade().length-1; j++) {
-                    if (!inTheAir){
-                    physics.checkCollisions(platforms[i].getBlockade()[j]);
+    private void applyPhysics(ArrayList<Platform> platforms, boolean inTheAir) {
+        for (Platform platform : platforms) {
+            for (Blockade blockade : platform.getBlockade()) {
+                for (Physics physics : physicsList) {
+                    if (inTheAir) {
+                        physics.checkCollisionsInTheAir(blockade);
                     } else {
-                        physics.checkCollisionsInTheAir(platforms[i].getBlockade()[j]);
+                        physics.checkCollisions(blockade);
                     }
                 }
-                physics.roofImpact(platforms[i].getBlockade()[platforms[i].getBlockade().length-1]);
             }
-
+            for (Physics physics : physicsList) {
+                    physics.roofImpact(platform.getBlockade()[1]);
+            }
+        }
     }
 
 
-    public void draw(Canvas canvas) {
+    public void drawMap(Canvas canvas) {
+
+    }
+
+    private void drawPlatforms(Canvas canvas, ArrayList<Platform> platforms) {
         for (Platform platform : platforms) {
-            platform.draw(canvas);
-        }
-        for (Platform platform : airPlatform) {
-            platform.draw(canvas);
-        }
-    }
-
-    public void drawPlatforms(Canvas canvas, Platform[] platformsToDraw) {
-        for (Platform platform : platformsToDraw) {
             platform.draw(canvas);
         }
     }

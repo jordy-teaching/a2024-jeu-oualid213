@@ -7,7 +7,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class World {
-    private static final String MAP_PATH = "images/demo.png";
+    private static final String MAP_PATH = "images/tiles.png";
 
     private Image background;
 
@@ -26,6 +26,10 @@ public class World {
         }
     }
     public void draw(Canvas canvas) {
-        canvas.drawImage(background, 0, -64);
+        canvas.drawRectangle(0,0,1000,1000,Color.black);
+        canvas.drawImage(background, 0, -0);
+        canvas.drawImage(background, 800, -0);
+        canvas.drawImage(background, 800*2, -0);
+
     }
 }

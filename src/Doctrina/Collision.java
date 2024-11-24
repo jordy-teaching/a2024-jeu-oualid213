@@ -39,7 +39,8 @@ public class Collision {
         int allowedDistance = entity.getSpeed();
         for (StaticEntity other : CollidableRepository.getInstance()) {
             if (hitBox.intersects(other.getBounds())) {
-                allowedDistance = Math.min(allowedDistance, calculator.calculateWith(other));
+                allowedDistance = Math.min(allowedDistance, 0);
+                System.out.println(allowedDistance);
             }
         }
         return allowedDistance;

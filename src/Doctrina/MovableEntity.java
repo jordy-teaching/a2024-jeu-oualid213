@@ -3,8 +3,8 @@ package Doctrina;
 import java.awt.*;
 
 public abstract class MovableEntity extends StaticEntity {
-    private int speed = 100;
-    private Direction direction = Direction.DOWN;
+    private int speed = 0;
+    private Direction direction = Direction.RIGHT;
     private final Collision collision;
 
     private int lastX = Integer.MIN_VALUE;
@@ -13,8 +13,6 @@ public abstract class MovableEntity extends StaticEntity {
     private boolean inAir = true;
     private boolean inAirPlatform = false;
     private float verticalVelocity = 0;
-
-    protected Physics physics;
 
     private boolean moved;
 
@@ -30,13 +28,29 @@ public abstract class MovableEntity extends StaticEntity {
         int allowedSpeed = collision.getAllowedSpeed(direction);
 
 
-        x += direction.calculateVelocityX(allowedSpeed);
+        x +=  direction.calculateVelocityX(allowedSpeed);
         y += direction.calculateVelocityY(allowedSpeed);
 
         moved = (x != lastX || y != lastY);
 
         lastX = x;
         lastY = y;
+    }
+    public void move(int speed) {
+        int allowedSpeed = collision.getAllowedSpeed(direction);
+
+
+        x +=  direction.calculateVelocityX(speed);
+        y += direction.calculateVelocityY(allowedSpeed);
+
+        moved = (x != lastX || y != lastY);
+
+        lastX = x;
+        lastY = y;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public boolean isInAirPlatform() {
@@ -53,6 +67,10 @@ public abstract class MovableEntity extends StaticEntity {
     public void move(Direction direction) {
         this.direction = direction;
         move();
+    }
+    public void move(Direction direction,int speed) {
+        this.direction = direction;
+        move(speed);
     }
 
     public Rectangle getHitBox() {
@@ -123,4 +141,5 @@ public abstract class MovableEntity extends StaticEntity {
     public boolean isInAir() {
         return inAir;
     }
+
 }
