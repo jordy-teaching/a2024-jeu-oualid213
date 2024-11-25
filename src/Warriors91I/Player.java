@@ -135,7 +135,6 @@ public class Player extends ControllableEntity {
             canvas.drawImage(leftFrames[currentAnimationFrame], x, y, 64*2, 40*2 );
         }
 
-//        drawHitBox(canvas);
     }
 
     public void drawHealthBar(Canvas canvas) {
