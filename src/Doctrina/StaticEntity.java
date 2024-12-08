@@ -43,4 +43,6 @@ public abstract class StaticEntity {
     public int getHeight() {
         return height;
     }
+
+
 }

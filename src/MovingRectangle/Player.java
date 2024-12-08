@@ -5,7 +5,7 @@ import Doctrina.Controller;
 
 import java.awt.*;
 
-public class Player {
+public class  Player {
 
     private GamePad gamePad;
     private int x;

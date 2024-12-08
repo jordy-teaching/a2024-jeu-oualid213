@@ -38,24 +38,24 @@ public class Player extends ControllableEntity {
 
     private void loadAnimationFrames() {
         downFrames = new Image[3];
-        downFrames[0] = image.getSubimage(0, 128, width, height);
-        downFrames[1] = image.getSubimage(32, 128, width, height);
-        downFrames[2] = image.getSubimage(64, 128, width, height);
+        downFrames[0] = image.getSubimage(64, 40, width, height);
+        downFrames[1] = image.getSubimage(64, 40, width, height);
+        downFrames[2] = image.getSubimage(64, 40, width, height);
 
         leftFrames = new Image[3];
-        leftFrames[0] = image.getSubimage(0, 160, width, height);
-        leftFrames[1] = image.getSubimage(32, 160, width, height);
-        leftFrames[2] = image.getSubimage(64, 160, width, height);
+        leftFrames[0] = image.getSubimage(64, 40, width, height);
+        leftFrames[1] = image.getSubimage(64, 40, width, height);
+        leftFrames[2] = image.getSubimage(64, 40, width, height);
 
         rightFrames = new Image[3];
-        rightFrames[0] = image.getSubimage(0, 192, width, height);
-        rightFrames[1] = image.getSubimage(32, 192, width, height);
-        rightFrames[2] = image.getSubimage(64, 192, width, height);
+        rightFrames[0] = image.getSubimage(64, 40, width, height);
+        rightFrames[1] = image.getSubimage(64, 40, width, height);
+        rightFrames[2] = image.getSubimage(64, 40, width, height);
 
         upFrames = new Image[3];
-        upFrames[0] = image.getSubimage(0, 224, width, height);
-        upFrames[1] = image.getSubimage(32, 224, width, height);
-        upFrames[2] = image.getSubimage(64, 224, width, height);
+        upFrames[0] = image.getSubimage(64, 40, width, height);
+        upFrames[1] = image.getSubimage(64, 40, width, height);
+        upFrames[2] = image.getSubimage(64, 40, width, height);
     }
 
     private void loadSpriteSheet() {

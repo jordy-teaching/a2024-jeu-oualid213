@@ -9,8 +9,8 @@ public class GamePad extends MovementController {
     private final int fireKey = KeyEvent.VK_SPACE;
 
     public GamePad() {
-        bindKey(quitKey);
-        bindKey(fireKey);
+        findKey(quitKey);
+        findKey(fireKey);
     }
 
     public boolean isQuitPressed() {
