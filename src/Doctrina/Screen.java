@@ -10,6 +10,8 @@ public class Screen {
     private Cursor invisibleCursor;
     private GraphicsDevice device;
     private DisplayMode fullscreenDisplayMode;
+    private DisplayMode windowedDisplayMode;
+
     private boolean isFullscreenMode;
 
     public Screen() {
@@ -45,7 +47,7 @@ public class Screen {
         if (frameIsVisible) {
             frame.setVisible(true);
         }
-        //fullscreenDisplayMode = findClosestDisplayMode(width, height);
+        fullscreenDisplayMode = findClosestDisplayMode(width, height);
         System.out.println("Fullscreen Mode: " + fullscreenDisplayMode.getWidth() + "x" + fullscreenDisplayMode.getHeight());
     }
 
@@ -65,7 +67,7 @@ public class Screen {
         if (device.isFullScreenSupported()) {
             device.setFullScreenWindow(frame);
         }
-        //device.setDisplayMode(fullscreenDisplayMode);
+        device.setDisplayMode(fullscreenDisplayMode);
         frame.setLocationRelativeTo(null);
         isFullscreenMode = true;
     }
@@ -74,7 +76,7 @@ public class Screen {
         if (device.isFullScreenSupported()) {
             device.setFullScreenWindow(null);
         }
-        //device.setDisplayMode(windowedDisplayMode);
+        device.setDisplayMode(windowedDisplayMode);
         frame.setLocationRelativeTo(null);
         isFullscreenMode = false;
     }
@@ -122,6 +124,6 @@ public class Screen {
     private void initializeDevice() {
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         fullscreenDisplayMode = device.getDisplayMode();
-//         windowedDisplayMode = device.getDisplayMode();
+         windowedDisplayMode = device.getDisplayMode();
     }
 }

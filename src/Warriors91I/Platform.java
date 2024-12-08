@@ -16,6 +16,8 @@ public class Platform extends StaticEntity {
         teleport(x, y);
         this.type = type;
         this.blockade = configureBlockades();
+        setDimension(32, 32);
+
         importOutsideSprites();
     }
 
@@ -38,6 +40,7 @@ public class Platform extends StaticEntity {
 
 
 
+
     private void importOutsideSprites() {
         BufferedImage img = (BufferedImage) LoadSave.getInstance().getMap();
 
@@ -54,16 +57,20 @@ public class Platform extends StaticEntity {
         Blockade[] blockades = new Blockade[3];
 
         blockades[0] = new Blockade();
-        blockades[0].teleport(x, y - 32); // top
-        blockades[0].setDimension(16, 0);
+        blockades[0].teleport(x, y - 32);
+        blockades[0].setDimension(16, 1);
 
         blockades[1] = new Blockade();
-        blockades[1].teleport(x, y + 16); // bottom
+        blockades[1].teleport(x, y + 16);
         blockades[1].setDimension(16, 3);
 
         blockades[2] = new Blockade();
         blockades[2].teleport(x + 16, y);
         blockades[2].setDimension(1, 16);
+
+        blockades[2] = new Blockade();
+        blockades[2].teleport(x - 16, y);
+        blockades[2].setDimension(3, 16);
 
 
         return blockades;
@@ -71,7 +78,7 @@ public class Platform extends StaticEntity {
     }
 
     private Blockade[] createWallBlockades() {
-        Blockade[] blockades = new Blockade[2];
+        Blockade[] blockades = new Blockade[4];
 
         blockades[0] = new Blockade();
         blockades[0].teleport(x - 10, y);
@@ -80,6 +87,16 @@ public class Platform extends StaticEntity {
         blockades[1] = new Blockade();
         blockades[1].teleport(x + 16, y);
         blockades[1].setDimension(1, 16);
+
+        blockades[2] = new Blockade();
+        blockades[2].teleport(x, y - 16); // top
+        blockades[2].setDimension(16, 1);
+
+        blockades[3] = new Blockade();
+        blockades[3].teleport(x, y + 16); // bottom
+        blockades[3].setDimension(16, 3);
+
+
 
         return blockades;
     }
@@ -96,12 +113,12 @@ public class Platform extends StaticEntity {
         blockades[1].setDimension(16, 10);
 
         blockades[2] = new Blockade();
-        blockades[2].teleport(x - 10, y);
-        blockades[2].setDimension(10, 16);
+        blockades[2].teleport(x + 16,y );
+        blockades[2].setDimension(3,8);
 
         blockades[3] = new Blockade();
-        blockades[3].teleport(x + 32, y);
-        blockades[3].setDimension(10, 16);
+        blockades[3].teleport(x -16 ,y);
+        blockades[3]. setDimension(3,8);
 
         return blockades;
     }
@@ -119,13 +136,11 @@ public class Platform extends StaticEntity {
 
         blockades[2] = new Blockade();
         blockades[2].teleport(x + 16,y );
-        blockades[2].setDimension(1,8);
+        blockades[2].setDimension(3,8);
 
         blockades[3] = new Blockade();
-        blockades[3].teleport(x -5 ,y);
-        blockades[3]. setDimension(1,8);
-
-
+        blockades[3].teleport(x -16 ,y);
+        blockades[3]. setDimension(3,8);
 
         return blockades;
     }
@@ -161,16 +176,19 @@ public class Platform extends StaticEntity {
     public void draw(Canvas canvas) {
         switch (type) {
             case WALL:
-                canvas.drawImage(levelSprite[12], x, y); // Exemple de sprite pour les murs
+                canvas.drawImage(levelSprite[12], x, y);
                 break;
             case GROUND:
-                canvas.drawImage(levelSprite[10], x, y); // Exemple de sprite pour le sol
+                canvas.drawImage(levelSprite[10], x, y);
                 break;
             case FLYING:
-                canvas.drawImage(levelSprite[8], x, y); // Exemple de sprite pour plateformes volantes
+                canvas.drawImage(levelSprite[8], x, y);
                 break;
             case EMBEDDED_GROUND:
-                canvas.drawImage(levelSprite[6], x, y); // Exemple de sprite pour sol intégré
+                canvas.drawImage(levelSprite[6], x, y);
+                break;
+            case DEATH:
+                canvas.drawImage(levelSprite[6], x, y);
                 break;
         }
 

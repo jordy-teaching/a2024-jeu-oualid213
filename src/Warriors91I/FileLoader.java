@@ -23,7 +23,6 @@ public class FileLoader {
                 row++;
             }
 
-
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
                     System.out.print(matrix[i][j] + " ");

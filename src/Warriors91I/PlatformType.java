@@ -5,5 +5,6 @@ public enum PlatformType {
     GROUND,         // Sol normal
     FLYING,         // Plateforme volante
     EMBEDDED_GROUND, // Plateforme intégrée dans le sol
-    ROOF
+    ROOF,
+    DEATH
 }

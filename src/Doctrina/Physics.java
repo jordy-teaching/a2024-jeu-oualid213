@@ -1,10 +1,10 @@
 package Doctrina;
 
 public class Physics {
-    private static final float GRAVITY = 0.8f;
-    private static final float JUMP_STRENGTH = -15.0f;
+    private static final float GRAVITY = 0.9f;
+      private static final float JUMP_STRENGTH = -18.0f;
     private static final float AIR_RESISTANCE = 0.03f;
-    private static final float MAX_FALL_SPEED = 100.0f;
+    private static final float MAX_FALL_SPEED = 500.0f;
 
     private MovableEntity entity;
 

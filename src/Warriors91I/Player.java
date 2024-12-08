@@ -54,7 +54,6 @@ public class Player extends ControllableEntity {
     private void loadAnimationFrames() {
         int frameWidth = 64;
         int frameHeight = 40;
-        //97, 157
 
         leftFrames = new Image[3];
         leftFrames[0] = image.getSubimage(0, frameHeight, frameWidth, frameHeight);
@@ -134,19 +133,30 @@ public class Player extends ControllableEntity {
         } else {
             canvas.drawImage(leftFrames[currentAnimationFrame], x, y, 64*2, 40*2 );
         }
+        drawPlayerStats(canvas);
+
+
+    }
+    private void drawPlayerStats(Canvas canvas) {
 
     }
 
+
     public void drawHealthBar(Canvas canvas) {
         int barWidth = 200;
-        int barHeight = 20;
+        int barHeight = 10;
 
         int x = 10;
         int y = 10;
 
+
         canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
         canvas.drawRectangle(x, y, barWidth, barHeight, Color.RED);
         canvas.drawRectangle(x, y, (int) ((getHealth() / (float) 100) * barWidth), barHeight, Color.GREEN);
+
+
+
+
     }
 
     public void applyDamage(int damage) {
@@ -161,12 +171,12 @@ public class Player extends ControllableEntity {
         return DAMAGE;
     }
 
-    public Weapon shoot() {
+    public Ball shoot() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastShootTime >= SHOOT_COOLDOWN) {
             lastShootTime = currentTime;
-            return new Weapon(this);
+            return new Ball(this);
         }
-        return null; // Retourne null si le cooldown n'est pas terminé
+        return null;
     }
 }

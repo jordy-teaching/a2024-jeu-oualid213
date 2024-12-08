@@ -13,20 +13,23 @@ public class WarriorsGame extends Game {
     private World world;
     private PlatformsBuilder platformBuilder;
     private Camera camera;
+    private Weapon weapon;
     private ArrayList<Enemy> enemies;
     private ArrayList<Physics> physicsEntities;
-    private WeaponManager weaponManager;
+
+    private static final int PLAYER_START_X = 250;
+    private static final int PLAYER_START_Y = 250;
 
     @Override
     protected void initialize() {
         initializeGamePad();
         initializePlayer();
         initializeEnemies();
+        initializeWeapon();
         initializePhysicsEntities();
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
-        initializeWeaponManager();
     }
 
     private void initializeGamePad() {
@@ -35,12 +38,16 @@ public class WarriorsGame extends Game {
 
     private void initializePlayer() {
         player = new Player(gamePad);
-        player.teleport(250, 250);
+        player.teleport(PLAYER_START_X, PLAYER_START_Y);
     }
 
     private void initializeEnemies() {
         enemies = new ArrayList<>();
         enemies.add(new Enemy(100, 300));
+    }
+
+    private void initializeWeapon() {
+        weapon = new Weapon(player);
     }
 
     private void initializePhysicsEntities() {
@@ -65,25 +72,31 @@ public class WarriorsGame extends Game {
         world.load();
     }
 
-    private void initializeWeaponManager() {
-        weaponManager = new WeaponManager();
-    }
-
     @Override
     protected void update() {
         if (gamePad.isQuitPressed()) {
             stop();
         }
 
+        if (platformBuilder.isInDeathZone(player)) {
+            teleportPlayerToStart();
+        }
+
         updateEnemies();
         handleMeleeAttack();
-        handleWeaponAttack();
+        weapon.handleWeaponAttack(gamePad, enemies);
         camera.update(player);
         applyPhysics();
         platformBuilder.initializePhysics();
         handleJump();
         player.update();
-        weaponManager.updateWeapons();
+
+        weapon.update();
+    }
+
+    private void teleportPlayerToStart() {
+        System.out.println("Le joueur est tombé dans la death zone ! Retour au début.");
+        player.teleport(PLAYER_START_X, PLAYER_START_Y);
     }
 
     private void updateEnemies() {
@@ -103,32 +116,14 @@ public class WarriorsGame extends Game {
 
     private void handleMeleeAttack() {
         if (gamePad.isAttackPressed()) {
-            for (Enemy enemy : enemies) {
+            for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
+                Enemy enemy = iterator.next();
                 if (player.intersectWith(enemy)) {
                     enemy.takeDamage(player.getAttackDamage());
                     if (enemy.isDead()) {
-                        enemies.remove(enemy);
+                        iterator.remove();
                         break;
                     }
-                }
-            }
-        }
-    }
-
-    private void handleWeaponAttack() {
-        if (gamePad.isWeaponPressed()) {
-            Weapon temp = player.shoot();
-            if(temp != null){
-                weaponManager.addWeapon(temp);
-            }
-        }
-
-        for(Enemy enemy : enemies){
-            if (weaponManager.isIntersect(enemy)){
-                enemy.takeDamage(weaponManager.weaponDamage());
-                if (enemy.isDead()) {
-                    enemies.remove(enemy);
-                    break;
                 }
             }
         }
@@ -152,14 +147,20 @@ public class WarriorsGame extends Game {
         canvas.translate(-camera.getX(), -camera.getY());
 
         world.draw(canvas);
+        world.update();
         platformBuilder.drawMap(canvas);
         drawEnemies(canvas);
-        weaponManager.drawWeapons(canvas);
-        player.draw(canvas);
-//     CollidableRepository.getInstance().draw(canvas);
 
+        platformBuilder.drawDeathZone(canvas);
+        player.draw(canvas);
+        weapon.draw(canvas);
         canvas.restoreState();
+
         player.drawHealthBar(canvas);
+
+        canvas.drawString(Integer.toString(weapon.getNumberOfBall()),10,40, Color.white);
+
+        System.out.println("fps : " + GameTime.getCurrentFps());
     }
 
     private void drawEnemies(Canvas canvas) {
