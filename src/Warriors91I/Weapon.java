@@ -25,7 +25,7 @@ public class Weapon extends StaticEntity {
     }
 
     public Weapon(Player player, WeaponType type) {
-        teleport(400, 250);
+        teleport(400, 350);
         setDimension(50, 50);
         this.player = player;
         this.balls = new BallsManager();

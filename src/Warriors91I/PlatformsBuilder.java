@@ -15,6 +15,8 @@ public class PlatformsBuilder {
     private final List<Platform> flyingPlatforms = new ArrayList<>();
     private final List<int[][]> maps = new ArrayList<>();
     private final List<int[][]> maps2 = new ArrayList<>();
+    private final List<int[][]> maps3 = new ArrayList<>();
+
 
     private final ArrayList<Physics> physicsList;
 
@@ -28,10 +30,25 @@ public class PlatformsBuilder {
         maps.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid3.csv"));
         maps.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid4.csv"));
         maps.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid5.csv"));
-        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid7.csv"));
+        maps.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid6.csv"));
+
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid8.csv"));
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid9.csv"));
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid10.csv"));
+        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid7.csv"));
+        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid12.csv"));
+        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid13.csv"));
+        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid14.csv"));
+
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid15.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid16.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid17.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid18.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid19.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid20.csv"));
+        maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid21.csv"));
+
+
 
 
 
@@ -39,11 +56,13 @@ public class PlatformsBuilder {
     public void initializeMap() {
         generatePlatformsFromMaps();
         generatePlatformsFromMaps2();
+        generatePlatformsFromMaps3();
+
     }
 
     public void initializePhysics() {
-        applyPhysics(groundPlatforms, false); // Physique au sol
-        applyPhysics(flyingPlatforms, true);  // Physique en l'air
+        applyPhysics(groundPlatforms, false);
+        applyPhysics(flyingPlatforms, true);
     }
 
     private void generatePlatformsFromMaps() {
@@ -93,6 +112,31 @@ public class PlatformsBuilder {
             offsetX += 800;
         }
     }
+    private void generatePlatformsFromMaps3() {
+        int tileSize = 16;
+        int offsetX = 0;
+        int offsetY = -600;
+
+        for (int[][] map : maps3) {
+            for (int row = 0; row < map.length; row++) {
+                for (int col = 0; col < map[row].length; col++) {
+                    int value = map[row][col];
+                    int x = col * tileSize + offsetX;
+                    int y = row * tileSize + offsetY;
+
+                    switch (value) {
+                        case 1 -> groundPlatforms.add(new Platform(x, y, PlatformType.GROUND));
+                        case 2 -> wallPlatforms.add(new Platform(x, y, PlatformType.WALL));
+                        case 3 -> flyingPlatforms.add(new Platform(x, y, PlatformType.ROOF));
+                        case 4 -> flyingPlatforms.add(new Platform(x, y, PlatformType.FLYING));
+                        case 5 -> deathPlatforms.add(new Platform(x,y,PlatformType.DEATH));
+                    }
+                }
+            }
+            offsetX += 800;
+        }
+    }
+
 
 
     private void applyPhysics(List<Platform> platforms, boolean inTheAir) {
@@ -125,9 +169,7 @@ public class PlatformsBuilder {
         return false;
     }
     public boolean drawDeathZone(Canvas canvas){
-        for (Platform platform : deathPlatforms) {
-            platform.draw(canvas);
-        }
+
         return false;
     }
 
@@ -137,3 +179,21 @@ public class PlatformsBuilder {
         }
     }
 }
+
+/*
+* todo list:
+*  i need to finish the map (potable) ---
+*  i need to debug them ---
+*  i need to do some refactoring ---
+*  i need to put it full screen
+*  i need to put the game play with the enemies
+*  i need to put the object in the map
+*  i need to put the child
+*  i need to do the final boss
+*  i need to find some bugs
+*  *  i need to add the music
+*  i need to refactor all the classes
+*  i need to do some bugs searching
+*  i need to make the menu more sweet
+*  i need to go to the gym, cause i really need it
+*  i need to sleep, cause its important */

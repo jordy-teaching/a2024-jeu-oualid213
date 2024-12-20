@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 public class WarriorsGame extends Game {
     private Player player;
+    private Menu menu;
     private GamePad gamePad;
     private World world;
     private PlatformsBuilder platformBuilder;
@@ -16,12 +17,15 @@ public class WarriorsGame extends Game {
     private Weapon weapon;
     private ArrayList<Enemy> enemies;
     private ArrayList<Physics> physicsEntities;
-
     private static final int PLAYER_START_X = 250;
     private static final int PLAYER_START_Y = 250;
+    private static final int TARGET_FPS = 60;  // Fréquence cible de 60 FPS
+    private static final long OPTIMAL_TIME_PER_FRAME = 1000000000 / TARGET_FPS;  // Nanosecondes par frame
+    private long lastUpdateTime = System.nanoTime();
 
     @Override
     protected void initialize() {
+        initializeMenu();
         initializeGamePad();
         initializePlayer();
         initializeEnemies();
@@ -30,6 +34,13 @@ public class WarriorsGame extends Game {
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
+    }
+
+    private void initializeMenu() {
+        menu = new Menu();
+        menu.addOption("Start Game");
+        menu.addOption("Options");
+        menu.addOption("Exit");
     }
 
     private void initializeGamePad() {
@@ -43,11 +54,13 @@ public class WarriorsGame extends Game {
 
     private void initializeEnemies() {
         enemies = new ArrayList<>();
-        enemies.add(new Enemy(100, 300));
+        enemies.add(new Ghost(100, 300));
+        enemies.add(new Zombie(100, 300));
+        enemies.add(new Ghost(1200, 300));
     }
 
     private void initializeWeapon() {
-        weapon = new Weapon(player);
+        weapon = new Weapon(player, WeaponType.FLAME_THROWER);
     }
 
     private void initializePhysicsEntities() {
@@ -74,25 +87,37 @@ public class WarriorsGame extends Game {
 
     @Override
     protected void update() {
-        if (gamePad.isQuitPressed()) {
-            stop();
+        if (menu.isActive()) {
+            menu.handleInput(gamePad);
+        } else {
+            long now = System.nanoTime();
+            long elapsedTime = now - lastUpdateTime;
+
+            if (elapsedTime >= OPTIMAL_TIME_PER_FRAME) {
+                if (gamePad.isQuitPressed()) {
+                    stop();
+                }
+
+                if (platformBuilder.isInDeathZone(player)) {
+                    teleportPlayerToStart();
+                }
+
+                updateEnemies();
+                handleMeleeAttack();
+                weapon.handleWeaponAttack(gamePad, enemies);
+                camera.update(player);
+                applyPhysics();
+                platformBuilder.initializePhysics();
+                handleJump();
+                player.update();
+
+                weapon.update();
+
+                lastUpdateTime = now;
+            }
         }
-
-        if (platformBuilder.isInDeathZone(player)) {
-            teleportPlayerToStart();
-        }
-
-        updateEnemies();
-        handleMeleeAttack();
-        weapon.handleWeaponAttack(gamePad, enemies);
-        camera.update(player);
-        applyPhysics();
-        platformBuilder.initializePhysics();
-        handleJump();
-        player.update();
-
-        weapon.update();
     }
+
 
     private void teleportPlayerToStart() {
         System.out.println("Le joueur est tombé dans la death zone ! Retour au début.");
@@ -131,7 +156,7 @@ public class WarriorsGame extends Game {
 
     private void applyPhysics() {
         for (Physics physics : physicsEntities) {
-            physics.applyGravity();
+                physics.applyGravity();
         }
     }
 
@@ -143,25 +168,30 @@ public class WarriorsGame extends Game {
 
     @Override
     protected void draw(Canvas canvas) {
-        canvas.saveState();
-        canvas.translate(-camera.getX(), -camera.getY());
+        if (menu.isActive()) {
+            menu.draw(canvas);
+        } else {
+            canvas.saveState();
+            canvas.translate(-camera.getX(), -camera.getY());
 
-        world.draw(canvas);
-        world.update();
-        platformBuilder.drawMap(canvas);
-        drawEnemies(canvas);
+            world.draw(canvas);
+            platformBuilder.drawMap(canvas);
+            drawEnemies(canvas);
 
-        platformBuilder.drawDeathZone(canvas);
-        player.draw(canvas);
-        weapon.draw(canvas);
-        canvas.restoreState();
+            platformBuilder.drawDeathZone(canvas);
+            player.draw(canvas);
+            weapon.draw(canvas);
 
-        player.drawHealthBar(canvas);
 
-        canvas.drawString(Integer.toString(weapon.getNumberOfBall()),10,40, Color.white);
 
-        System.out.println("fps : " + GameTime.getCurrentFps());
+            canvas.restoreState();
+
+            canvas.drawString(Integer.toString(weapon.getNumberOfBall()), 10, 40, Color.white);
+
+            System.out.println("fps : " + GameTime.getCurrentFps());
+        }
     }
+
 
     private void drawEnemies(Canvas canvas) {
         for (Enemy enemy : enemies) {
@@ -176,3 +206,4 @@ public class WarriorsGame extends Game {
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= alertRadius;
     }
 }
+

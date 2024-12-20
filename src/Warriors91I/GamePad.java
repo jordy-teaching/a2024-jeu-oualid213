@@ -10,6 +10,8 @@ public class GamePad extends MovementController {
     private final int jumpKey = KeyEvent.VK_SPACE;
     private final int attackKey = KeyEvent.VK_S;
     private final int shootKey = KeyEvent.VK_D;
+    private final int enter = KeyEvent.VK_ENTER;
+
 
 
     public GamePad() {
@@ -18,6 +20,8 @@ public class GamePad extends MovementController {
         findKey(jumpKey);
         findKey(attackKey);
         findKey(shootKey);
+        findKey(enter);
+
     }
 
     public boolean isQuitPressed() {
@@ -33,5 +37,8 @@ public class GamePad extends MovementController {
 
     public boolean isFirePressed() {
         return isKeyPressed(fireKey);
+    }
+
+    public boolean isSelectPressed() {return isKeyPressed(enter);
     }
 }

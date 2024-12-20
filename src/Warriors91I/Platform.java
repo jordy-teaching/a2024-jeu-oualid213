@@ -54,7 +54,7 @@ public class Platform extends StaticEntity {
         }
     }
     private Blockade[] createRoofBlockades() {
-        Blockade[] blockades = new Blockade[3];
+        Blockade[] blockades = new Blockade[2];
 
         blockades[0] = new Blockade();
         blockades[0].teleport(x, y - 32);
@@ -63,14 +63,6 @@ public class Platform extends StaticEntity {
         blockades[1] = new Blockade();
         blockades[1].teleport(x, y + 16);
         blockades[1].setDimension(16, 3);
-
-        blockades[2] = new Blockade();
-        blockades[2].teleport(x + 16, y);
-        blockades[2].setDimension(1, 16);
-
-        blockades[2] = new Blockade();
-        blockades[2].teleport(x - 16, y);
-        blockades[2].setDimension(3, 16);
 
 
         return blockades;
@@ -105,11 +97,11 @@ public class Platform extends StaticEntity {
         Blockade[] blockades = new Blockade[4];
 
         blockades[0] = new Blockade();
-        blockades[0].teleport(x, y - 32);
+        blockades[0].teleport(x, y - 30);
         blockades[0].setDimension(32, 10);
 
         blockades[1] = new Blockade();
-        blockades[1].teleport(x, y + 32);
+        blockades[1].teleport(x, y + 30);
         blockades[1].setDimension(16, 10);
 
         blockades[2] = new Blockade();
@@ -127,7 +119,7 @@ public class Platform extends StaticEntity {
         Blockade[] blockades = new Blockade[4];
 
         blockades[0] = new Blockade();
-        blockades[0].teleport(x, y - 32); // top
+        blockades[0].teleport(x, y - 30); // top
         blockades[0].setDimension(16, 10);
 
         blockades[1] = new Blockade();
@@ -192,9 +184,15 @@ public class Platform extends StaticEntity {
                 break;
         }
 
-//        for (int i = 0; i< blockade.length;i++){
-//            blockade[i].draw(canvas);
-//        }
+        for (int i = 0; i< blockade.length;i++){
+            blockade[i].draw(canvas);
+        }
 
     }
 }
+
+
+/*
+*     public Blockade[] getBlockade() {
+        return blockade;
+    }*/

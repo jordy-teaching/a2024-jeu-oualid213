@@ -11,7 +11,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends ControllableEntity {
-    private static final String SPRITE_PATH = "images/player.png";
+
+    // le personnage est 32 * 32
+    // je veux que tu puisse faire unn reverse du personnage quand il part à gauche
+    private static final String RUN_SPRITE = "images/Player/RUN.png";
+    private static final String IDLE_SPRITE = "images/Player/IDLE.png";
+    private static final String ATTACK_SPRITE = "images/Player/ATTACK.png";
+
     private static final int ANIMATION_SPEED = 8;
 
     private BufferedImage image;
@@ -60,7 +66,8 @@ public class Player extends ControllableEntity {
 
     private void loadSpriteSheet() {
         try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
+            System.out.println("je suis ici");
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(RUN_SPRITE));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

@@ -9,68 +9,78 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Enemy extends MovableEntity {
+public abstract class Enemy extends MovableEntity {
     private static final int CHANGE_DIRECTION_THRESHOLD = 100;
-    private static final String SPRITE_PATH = "images/player_sprites.png";
-    private static final int FRAME_WIDTH = 64;
-    private static final int FRAME_HEIGHT = 40;
-    private static final int FRAME_COUNT = 3;
+    private static final String SPRITE_PATH = "images/player.png";
+    private static final int FRAME_WIDTH = 32;
+    private static final int FRAME_HEIGHT = 32;
+    private static final int FRAMES_PER_DIRECTION = 3;
+    private static final int ANIMATION_SPEED = 8;
     private static final int ATTACK_COOLDOWN = 500;
+    private static final int DAMAGE = 1;
+    private static final int MIN_ATTACK_DISTANCE = 30;
+
     private long lastAttackTime = 0;
-    private static final int DAMAGE =1;
     private int health = 100;
     private int moveCounter = 0;
     private int currentAnimationFrame = 0;
     private int animationTimer = 0;
 
-    private boolean dead = false;
-    private static final int MIN_ATTACK_DISTANCE = 30;
+    protected int speed;
 
-    private BufferedImage spriteSheet;
-    private final Image[] rightFrames = new Image[FRAME_COUNT];
-    private final Image[] leftFrames = new Image[FRAME_COUNT];
-    private final Image[] upFrames = new Image[FRAME_COUNT];
-    private final Image[] downFrames = new Image[FRAME_COUNT];
+    private boolean dead = false;
+
+    protected BufferedImage spriteSheet;
+
+    protected final Image[] rightFrames = new Image[FRAMES_PER_DIRECTION];
+    protected final Image[] leftFrames = new Image[FRAMES_PER_DIRECTION];
+    private final Image[] upFrames = new Image[FRAMES_PER_DIRECTION];
+    private final Image[] downFrames = new Image[FRAMES_PER_DIRECTION];
 
     public Enemy(int x, int y) {
         super();
-        setDimension(32, 32);
+        setDimension(FRAME_WIDTH, FRAME_HEIGHT);
         teleport(x, y);
-        setSpeed(3);
+        setSpeed(speed);
         loadSprites();
     }
+
     public void moveTowardsPlayer(Player player) {
         int playerX = player.getX();
         int playerY = player.getY();
 
         int distanceX = Math.abs(playerX - this.getX());
+        int distanceY = Math.abs(playerY - this.getY());
 
-        if (distanceX > MIN_ATTACK_DISTANCE) {
+        if (distanceX > MIN_ATTACK_DISTANCE || distanceY > MIN_ATTACK_DISTANCE) {
             if (playerX > this.getX()) {
                 setDirection(Direction.RIGHT);
             } else if (playerX < this.getX()) {
                 setDirection(Direction.LEFT);
+            } else if (playerY > this.getY()) {
+                setDirection(Direction.DOWN);
+            } else if (playerY < this.getY()) {
+                setDirection(Direction.UP);
             }
+            setSpeed((int) (speed + speed * 0.5));
             move();
-            setSpeed(3);
         } else {
             stopMoving();
         }
     }
 
     private void stopMoving() {
-            setSpeed(0);
+        setSpeed(0);
     }
 
     public void hitPlayer(Player player) {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastAttackTime >= ATTACK_COOLDOWN) {
-            if (intersectWith(player)) {
-                player.applyDamage(DAMAGE);
-                lastAttackTime = currentTime;
-            }
+        if (currentTime - lastAttackTime >= ATTACK_COOLDOWN && intersectWith(player)) {
+            player.applyDamage(DAMAGE);
+            lastAttackTime = currentTime;
         }
     }
+
     @Override
     public void update() {
         super.update();
@@ -86,65 +96,58 @@ public class Enemy extends MovableEntity {
     @Override
     public void draw(Canvas canvas) {
         Image[] currentFrames = getCurrentAnimationFrames();
-        canvas.drawImage(currentFrames[currentAnimationFrame], x, y, FRAME_WIDTH * 2, FRAME_HEIGHT * 2);
-        drawHealthBar( canvas);
+        canvas.drawImage(currentFrames[currentAnimationFrame], getX(), getY(), FRAME_WIDTH +20 , FRAME_HEIGHT +20);
+        drawHealthBar(canvas);
     }
 
     private void loadSprites() {
         try {
             spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
-            loadAnimationFrames( leftFrames);
-            loadAnimationFrames( rightFrames);
+            loadAnimationFrames();
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement du sprite sheet : " + e.getMessage());
         }
     }
 
-    private void loadAnimationFrames( Image[] frames) {
-        int directionRow = 1;
-
-        for (int i = 0; i < FRAME_COUNT; i++) {
-            frames[i] = spriteSheet.getSubimage(i * FRAME_WIDTH, directionRow * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT);
-        }
-    }
 
     private void updateAnimation() {
-        animationTimer++;
-        if (animationTimer >= 10) { // Change de frame tous les 10 ticks
-            currentAnimationFrame = (currentAnimationFrame + 1) % FRAME_COUNT;
-            animationTimer = 0;
+        if (hasMoved()) {
+            animationTimer++;
+            if (animationTimer >= ANIMATION_SPEED) {
+                currentAnimationFrame = (currentAnimationFrame + 1) % FRAMES_PER_DIRECTION;
+                animationTimer = 0;
+            }
+        } else {
+            currentAnimationFrame = 0;
         }
     }
 
     private void changeDirection() {
-        Direction[] directions ={Direction.RIGHT, Direction.LEFT} ;
-
-        int randomIndex = (int) (Math.random() * directions.length);
-
-        setDirection(directions[randomIndex]);
+        Direction[] directions = {Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN};
+        setDirection(directions[(int) (Math.random() * directions.length)]);
     }
 
     private Image[] getCurrentAnimationFrames() {
         return switch (getDirection()) {
-            case UP -> upFrames;
-            case DOWN -> downFrames;
             case LEFT -> leftFrames;
             case RIGHT -> rightFrames;
+            case UP -> upFrames;
+            case DOWN -> downFrames;
             default -> throw new IllegalStateException("Direction inconnue : " + getDirection());
         };
     }
-    public void drawHealthBar(Canvas canvas) {
-        int barWidth = width;
+
+    private void drawHealthBar(Canvas canvas) {
+        int barWidth = FRAME_WIDTH * 2;
         int barHeight = 5;
 
-        int x = getX()+ 50;
-        int y = getY() ;
+        int barX = getX();
+        int barY = getY() - 10;
 
-        canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
-        canvas.drawRectangle(x, y, barWidth, barHeight, Color.RED);
-        canvas.drawRectangle(x, y, (int) ((health / (float) 100) * barWidth), barHeight, Color.GREEN);
+        canvas.drawRectangle(barX, barY, barWidth + 1, barHeight + 1, Color.BLACK);
+        canvas.drawRectangle(barX, barY, barWidth, barHeight, Color.RED);
+        canvas.drawRectangle(barX, barY, (int) ((health / 100.0) * barWidth), barHeight, Color.GREEN);
     }
-
 
     public boolean isDead() {
         return dead;
@@ -152,8 +155,10 @@ public class Enemy extends MovableEntity {
 
     public void takeDamage(int attackDamage) {
         health -= attackDamage;
-        if (health<0){
+        if (health <= 0) {
             dead = true;
         }
     }
+
+    protected abstract void loadAnimationFrames();
 }

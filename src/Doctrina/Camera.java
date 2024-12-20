@@ -17,13 +17,11 @@ public class Camera {
             y = player.getY() - viewHeight / 2;
 
             if (x < 0) x = 0;
-           //    if (y < 0) y = 0;
-            if (x > 10000 - viewWidth) x = 10000 - viewWidth;
+            if (x > 800*7 - viewWidth) x = 800*7 - viewWidth;
             if (y > 600*2 - viewHeight) y = 600*2- viewHeight;
         }
 
 
         public int getX() { return x; }
         public int getY() { return y; }
-
 }

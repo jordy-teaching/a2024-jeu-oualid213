@@ -77,7 +77,7 @@ public class Ball extends MovableEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRectangle(this, Color.YELLOW);
+        canvas.drawCircle(x,y,10, Color.WHITE);
     }
 
     public boolean getIsOutOfBounds() {

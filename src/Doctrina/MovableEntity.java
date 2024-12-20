@@ -87,7 +87,7 @@ public abstract class MovableEntity extends StaticEntity {
     }
 
     private Rectangle getUpperHitBox() {
-        return new Rectangle(x + 50 , y, width, height);
+        return new Rectangle(x + 30 , y, width, height);
     }
 
     private Rectangle getLowerHitBox() {
@@ -95,11 +95,11 @@ public abstract class MovableEntity extends StaticEntity {
     }
 
     private Rectangle getLeftHitBox() {
-        return new Rectangle(x + 40 , y, width , height);
+        return new Rectangle(x , y, width , height);
     }
 
     private Rectangle getRightHitBox() {
-        return new Rectangle(x + 60 , y, width, height);
+        return new Rectangle(x + 15 , y, width, height);
     }
 
     public boolean hitBoxIntersectWith(StaticEntity other) {
