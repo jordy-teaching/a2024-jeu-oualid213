@@ -9,7 +9,7 @@ public class GamePad extends MovementController {
     private int quitKey = KeyEvent.VK_Q;
 
     public GamePad() {
-        bindKey(quitKey);
+        findKey(quitKey);
     }
 
     public boolean isQuitPressed() {

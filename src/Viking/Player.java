@@ -11,7 +11,13 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends ControllableEntity {
-    private static final String SPRITE_PATH = "images/player.png";
+
+    // le personnage est 32 * 32
+    // je veux que tu puisse faire unn reverse du personnage quand il part à gauche
+    private static final String RUN_SPRITE = "images/Player/RUN.png";
+    private static final String IDLE_SPRITE = "images/Player/IDLE.png";
+    private static final String ATTACK_SPRITE = "images/Player/ATTACK.png";
+
     private static final int ANIMATION_SPEED = 8;
 
     private BufferedImage image;
@@ -38,29 +44,30 @@ public class Player extends ControllableEntity {
 
     private void loadAnimationFrames() {
         downFrames = new Image[3];
-        downFrames[0] = image.getSubimage(0, 128, width, height);
-        downFrames[1] = image.getSubimage(32, 128, width, height);
-        downFrames[2] = image.getSubimage(64, 128, width, height);
+        downFrames[0] = image.getSubimage(64, 40, width, height);
+        downFrames[1] = image.getSubimage(64, 40, width, height);
+        downFrames[2] = image.getSubimage(64, 40, width, height);
 
         leftFrames = new Image[3];
-        leftFrames[0] = image.getSubimage(0, 160, width, height);
-        leftFrames[1] = image.getSubimage(32, 160, width, height);
-        leftFrames[2] = image.getSubimage(64, 160, width, height);
+        leftFrames[0] = image.getSubimage(64, 40, width, height);
+        leftFrames[1] = image.getSubimage(64, 40, width, height);
+        leftFrames[2] = image.getSubimage(64, 40, width, height);
 
         rightFrames = new Image[3];
-        rightFrames[0] = image.getSubimage(0, 192, width, height);
-        rightFrames[1] = image.getSubimage(32, 192, width, height);
-        rightFrames[2] = image.getSubimage(64, 192, width, height);
+        rightFrames[0] = image.getSubimage(64, 40, width, height);
+        rightFrames[1] = image.getSubimage(64, 40, width, height);
+        rightFrames[2] = image.getSubimage(64, 40, width, height);
 
         upFrames = new Image[3];
-        upFrames[0] = image.getSubimage(0, 224, width, height);
-        upFrames[1] = image.getSubimage(32, 224, width, height);
-        upFrames[2] = image.getSubimage(64, 224, width, height);
+        upFrames[0] = image.getSubimage(64, 40, width, height);
+        upFrames[1] = image.getSubimage(64, 40, width, height);
+        upFrames[2] = image.getSubimage(64, 40, width, height);
     }
 
     private void loadSpriteSheet() {
         try {
-            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
+            System.out.println("je suis ici");
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(RUN_SPRITE));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

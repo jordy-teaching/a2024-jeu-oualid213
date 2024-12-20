@@ -8,7 +8,15 @@ import java.util.List;
 public class CollidableRepository implements Iterable<StaticEntity> {
     private static CollidableRepository instance;
 
-    private final List<StaticEntity> registeredEntities;
+    private  final List<StaticEntity> registeredEntities;
+
+    public void draw(Canvas canvas){
+
+        for (StaticEntity entity : registeredEntities){
+            entity.draw(canvas);
+        }
+
+    }
 
     private CollidableRepository() {
         registeredEntities = new ArrayList<>();

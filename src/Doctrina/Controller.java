@@ -13,7 +13,7 @@ public abstract class Controller implements KeyListener {
         RenderingEngine.getInstance().addKeyListener(this);
     }
 
-    protected void bindKey(int keyCode) {
+    protected void findKey(int keyCode) {
         pressedKeys.put(keyCode, false);
     }
 
