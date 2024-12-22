@@ -64,7 +64,6 @@ public class Platform extends StaticEntity {
         blockades[1].teleport(x, y + 16);
         blockades[1].setDimension(16, 3);
 
-
         return blockades;
 
     }
@@ -87,8 +86,6 @@ public class Platform extends StaticEntity {
         blockades[3] = new Blockade();
         blockades[3].teleport(x, y + 16); // bottom
         blockades[3].setDimension(16, 3);
-
-
 
         return blockades;
     }
@@ -127,7 +124,7 @@ public class Platform extends StaticEntity {
         blockades[1].setDimension(16, 3);
 
         blockades[2] = new Blockade();
-        blockades[2].teleport(x + 16,y );
+        blockades[2].teleport(x  - 16,y );
         blockades[2].setDimension(3,8);
 
         blockades[3] = new Blockade();
@@ -159,7 +156,7 @@ public class Platform extends StaticEntity {
         return blockades;
     }
 
-    public Blockade[] getBlockade() {
+    public Blockade[] getBlockades() {
         return blockade;
     }
 

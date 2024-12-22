@@ -3,7 +3,10 @@ package Warriors91I;
 import Doctrina.Canvas;
 import Doctrina.StaticEntity;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -15,6 +18,10 @@ public class Weapon extends StaticEntity {
     private boolean isActive = true;
     private WeaponType currentWeapon;
 
+    BufferedImage image;
+
+    Image weaponImage;
+
     public Weapon(Player player) {
         teleport(400, 250);
         setDimension(50, 50);
@@ -25,12 +32,33 @@ public class Weapon extends StaticEntity {
     }
 
     public Weapon(Player player, WeaponType type) {
-        teleport(400, 350);
+       // teleport(5511, 370);
+        teleport(400, 250);
+
         setDimension(50, 50);
         this.player = player;
         this.balls = new BallsManager();
         this.hasWeapon = false;
         this.currentWeapon = type;
+    }
+
+    private void load() {
+        loadAnimationFrames();
+
+        loadSpriteSheet();
+
+    }
+
+    private void loadAnimationFrames() {
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/weapon.png"));
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement du sprite sheet : " + e.getMessage());
+        }
+    }
+
+    private void loadSpriteSheet() {
+        weaponImage= image.getSubimage(0, 0, 100, 100);
     }
 
     public void update() {
@@ -77,7 +105,7 @@ public class Weapon extends StaticEntity {
 
     public void draw(Canvas canvas) {
         if (isActive) {
-            canvas.drawRectangle((int) getX(), (int) getY(), 50, 50, Color.RED);
+            canvas.drawImage(weaponImage, (int) getX(), (int) getY());
             canvas.drawString(currentWeapon.getWeaponLink(), (int) getX(), (int) getY() - 10, Color.WHITE);
         }
 

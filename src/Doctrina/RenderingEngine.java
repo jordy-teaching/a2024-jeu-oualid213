@@ -76,7 +76,12 @@ public class RenderingEngine {
 
     private void initializeScreen() {
         screen = new Screen();
-        screen.setSize(800, 600);
+        Dimension screenSize = screen.getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+        screen.setSize(screenWidth, screenHeight);
+
+
         bufferedImage = new BufferedImage(800, 600,
                 BufferedImage.TYPE_INT_RGB);
     }

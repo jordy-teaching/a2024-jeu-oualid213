@@ -11,30 +11,26 @@ import java.io.IOException;
 public class Player extends ControllableEntity {
     private static final String SPRITE_PATH = "images/player_sprites.png";
 
-
     private static final int ANIMATION_SPEED = 8;
     private static final int DAMAGE = 1;
-
     private static final int SHOOT_COOLDOWN = 250;
-    private long lastShootTime = 0;
 
+    private long lastShootTime = 0;
     private GamePad gamePad;
 
     private BufferedImage image;
-    private Image[] rightFrames;
     private Image[] leftFrames;
-    private Image[] upFrames;
-    private Image[] downFrames;
     private Image[] attackRightFrames;
     private Image[] attackLeftFrames;
 
     private int health = 100;
-
+    private int shield = 0;
+    private final int MAX_SHIELD = 100;
     private int currentAnimationFrame = 1;
     private int nextFrame = ANIMATION_SPEED;
     private boolean isAttacking = false;
     private int attackFrame = 0;
-    private static final int ATTACK_ANIMATION_SPEED = 10;
+    private boolean isDead = false;
 
     private boolean jump = false;
     private int animationStep = 1;
@@ -52,43 +48,35 @@ public class Player extends ControllableEntity {
         loadSpriteSheet();
         loadAnimationFrames();
     }
+    public void die() {
+        this.health = 0;
+    }
 
     private void loadAnimationFrames() {
         int frameWidth = 32;
         int frameHeight = 32;
 
         leftFrames = new Image[3];
-        leftFrames[0] = image.getSubimage(0, 4*frameHeight, frameWidth, frameHeight);
-        leftFrames[1] = image.getSubimage(frameWidth, 4*frameHeight, frameWidth, frameHeight);
-        leftFrames[2] = image.getSubimage(2 * frameWidth, 4*frameHeight, frameWidth, frameHeight);
+        setAnimationArray(leftFrames, 0, 4, 3, frameWidth, frameHeight);
 
         attackRightFrames = new Image[8];
-        attackRightFrames[0] = image.getSubimage(frameWidth * 0, 8 *frameHeight, frameWidth, frameHeight);
-        attackRightFrames[1] = image.getSubimage(frameWidth * 1 , 8* frameHeight, frameWidth, frameHeight);
-        attackRightFrames[2] = image.getSubimage(2 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackRightFrames[3] = image.getSubimage(3 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackRightFrames[4] = image.getSubimage(4 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackRightFrames[5] = image.getSubimage(5 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackRightFrames[6] = image.getSubimage(6 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackRightFrames[7] = image.getSubimage(7 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
+        setAnimationArray(attackRightFrames, 0, 8, 8, frameWidth, frameHeight);
 
         attackLeftFrames = new Image[8];
-        attackLeftFrames[0] = image.getSubimage(frameWidth * 0, 8 *frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[1] = image.getSubimage(frameWidth * 1 , 8* frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[2] = image.getSubimage(2 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[3] = image.getSubimage(3 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[4] = image.getSubimage(4 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[5] = image.getSubimage(5 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[6] = image.getSubimage(6 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
-        attackLeftFrames[7] = image.getSubimage(7 * frameWidth, 8 * frameHeight, frameWidth, frameHeight);
+        setAnimationArray(attackLeftFrames, 0, 8, 8, frameWidth, frameHeight);
+    }
 
-
+    private void setAnimationArray(Image[] array, int startX, int startY, int size, int frameWidth, int frameHeight) {
+        for (int i = 0; i < size; i++) {
+            array[i] = image.getSubimage((startX + i) * frameWidth, startY * frameHeight, frameWidth, frameHeight);
+        }
     }
 
     private void loadSpriteSheet() {
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,6 +87,16 @@ public class Player extends ControllableEntity {
         isAttacking();
         setAttackFramesAnimation();
         setFrames();
+        isPlayerDead();
+    }
+
+    private void isPlayerDead() {
+        if(health<=0){
+            isDead = true;
+        }
+    }
+    public boolean dead(){
+        return isDead;
     }
 
     private void setFrames() {
@@ -156,36 +154,55 @@ public class Player extends ControllableEntity {
             }
         }
 
-
-        drawPlayerStats(canvas);
-        drawHealthBar(canvas);
-    }
-
-    private void drawPlayerStats(Canvas canvas) {
-
     }
 
 
-    public void drawHealthBar(Canvas canvas) {
+
+    public void drawHealthBar(Canvas canvas, Camera camera) {
         int barWidth = 200;
         int barHeight = 10;
 
-        int x = 10;
-        int y = 10;
-
+        int x = camera.getX() + 10;
+        int y = camera.getY() + 20 ;
 
         canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
         canvas.drawRectangle(x, y, barWidth, barHeight, Color.RED);
         canvas.drawRectangle(x, y, (int) ((getHealth() / (float) 100) * barWidth), barHeight, Color.GREEN);
+    }
 
+    public void drawShieldBar(Canvas canvas, Camera camera) {
+        int barWidth = 200;
+        int barHeight = 10;
+
+        int x = camera.getX() + 10;
+        int y = camera.getY() + 40 ;
+
+        canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
+        canvas.drawRectangle(x, y, barWidth, barHeight, Color.BLUE);
+        canvas.drawRectangle(x, y, (int) ((getShield() / (float) MAX_SHIELD) * barWidth), barHeight, Color.CYAN);
     }
 
     public void applyDamage(int damage) {
-        health = health - damage;
+        if (shield > 0) {
+            applyShieldDamage(damage);
+        } else {
+            health -= damage;
+        }
+    }
+
+    public void applyShieldDamage(int damage) {
+        if (shield > 0) {
+            shield -= damage;
+            if (shield < 0) shield = 0; // Ensure shield doesn't go below 0
+        }
     }
 
     public int getHealth() {
         return health;
+    }
+
+    public int getShield() {
+        return shield;
     }
 
     public int getAttackDamage() {
@@ -200,15 +217,12 @@ public class Player extends ControllableEntity {
         }
         return null;
     }
-}
 
-
-/*
-* continuer a faire les autres ennemi et les mettre dans le bonne endroi
-* faire     private void isAttacking() {
-        if (gamePad.isAttackPressed() && !isAttacking) {
-            isAttacking = true;
-            attackFrame = 0;
-        }
+    public void setHealth() {
+        health = 100;
     }
-un beau UI pour le menu */
+
+    public void isAlive() {
+        isDead = false;
+    }
+}

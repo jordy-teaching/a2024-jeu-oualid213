@@ -1,33 +1,30 @@
 package Warriors91I;
 
 import Doctrina.Canvas;
-import java.awt.Color;
-
+import java.awt.*;
 import java.util.ArrayList;
 
-public class Menu {
-    private ArrayList<String> options;
-    private int selectedIndex;
-    private boolean active;
+public abstract class Menu {
+    protected boolean active;
     private long lastInputTime;
-    private static final int SPACING = 10;  // Espacement entre les options
-
+    protected ArrayList<String> options;
+    protected int selectedIndex;
+    private static final int SPACING = 15;
     private static final long COOLDOWN_TIME = 200;
-    private static final int MENU_WIDTH = 300; // Largeur du menu
-    private static final int MENU_HEIGHT = 40; // Hauteur de chaque option
+    private static final int MENU_WIDTH = 350;
+    private static final int MENU_HEIGHT = 50;
 
     public Menu() {
         options = new ArrayList<>();
         selectedIndex = 0;
-        active = true;
-        lastInputTime = System.currentTimeMillis();
+        active = false;
+        addOptions();
     }
 
-    public void addOption(String option) {
-        options.add(option);
-    }
+    abstract public void addOptions();
+    abstract public void executeOption();
 
-    public void handleInput(GamePad gamePad) {
+    protected void handleInput(GamePad gamePad, WarriorsGame warriorsGame) {
         long currentTime = System.currentTimeMillis();
 
         if (currentTime - lastInputTime < COOLDOWN_TIME) {
@@ -46,45 +43,42 @@ public class Menu {
         }
     }
 
-    private void executeOption() {
-        String option = options.get(selectedIndex);
-        switch (option) {
-            case "Start Game":
-                active = false;
-                break;
-            case "Options":
-                System.out.println("Options menu not implemented yet!");
-                break;
-            case "Exit":
-                System.exit(0);
-                break;
+    public void draw(Canvas canvas) {
+        int canvasWidth = 800;
+        int canvasHeight = 600;
+        int windowX = (canvasWidth - MENU_WIDTH) / 2;
+        int windowY = (canvasHeight - (MENU_HEIGHT * options.size() + SPACING * (options.size() - 1))) / 2;
+
+        Color backgroundColor = new Color(0, 0, 0, 180);
+        canvas.drawRectangle(0, 0, canvasWidth, canvasHeight, backgroundColor);
+
+        for (int i = 0; i < options.size(); i++) {
+            int optionY = windowY + i * (MENU_HEIGHT + SPACING);
+            drawOption(canvas, options.get(i), windowX, optionY, i == selectedIndex);
         }
     }
 
-    public void draw(Canvas canvas) {
-        int startX = (800 - MENU_WIDTH) / 2;
-        int startY = (600 - (options.size() * MENU_HEIGHT + (options.size() - 1) * SPACING)) / 2;
+    private void drawOption(Canvas canvas, String text, int x, int y, boolean isSelected) {
+        Color buttonColor = isSelected ? new Color(100, 200, 100) : new Color(200, 200, 200);
+        Color textColor = isSelected ? new Color(0, 0, 0) : new Color(50, 50, 50);
 
-        for (int i = 0; i < options.size(); i++) {
-            String option = options.get(i);
+        canvas.drawRectangle(x, y, MENU_WIDTH, MENU_HEIGHT, buttonColor);
 
-            Color backgroundColor = (i == selectedIndex)
-                    ? new Color(255, 0, 0)
-                    : new Color(255, 255, 255);
+        Font font = new Font("Arial", Font.BOLD, 20);
+        canvas.setFont(font);
+        int textWidth = canvas.getGraphics().getFontMetrics(font).stringWidth(text);
+        int textX = x + (MENU_WIDTH - textWidth) / 2;
+        int textY = y + (MENU_HEIGHT + font.getSize()) / 2 - 5;
+        canvas.drawString(text, textX, textY, textColor);
+    }
 
-            if (i == selectedIndex) {
-                canvas.drawRectangle(startX - 10, startY + (i * (MENU_HEIGHT + SPACING)) - 10, MENU_WIDTH + 20, MENU_HEIGHT + 20, new Color(50, 50, 50, 128));
-            }
+    public void activate() {
+        this.active = true;
+        selectedIndex = 0;
+    }
 
-            if (i == selectedIndex) {
-                canvas.drawShadowedRect(startX - 5, startY + (i * MENU_HEIGHT + SPACING) - 5, MENU_WIDTH + 10, MENU_HEIGHT + 10, 15, 15, new Color(50, 50, 50, 128), new Color(255, 255, 255, 100));
-            }
-
-            canvas.fillRoundRect(startX, startY + (i * (MENU_HEIGHT + SPACING)), MENU_WIDTH, MENU_HEIGHT, 15, 15, backgroundColor);
-
-            Color textColor = (i == selectedIndex) ? Color.white : new Color(0, 0, 0);
-            canvas.drawString(option, startX + 10, startY + (i * (MENU_HEIGHT + SPACING)) + 25, textColor);
-        }
+    public void deactivate() {
+        this.active = false;
     }
 
     public boolean isActive() {

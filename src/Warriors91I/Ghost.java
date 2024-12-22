@@ -6,9 +6,6 @@ public class Ghost extends Enemy {
         speed = 4;
     }
 
-    /*
-    * we can*/
-
 
         @Override
         protected void loadAnimationFrames() {

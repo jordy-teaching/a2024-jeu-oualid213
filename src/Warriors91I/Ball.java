@@ -4,7 +4,10 @@ import Doctrina.Canvas;
 import Doctrina.Direction;
 import Doctrina.MovableEntity;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Ball extends MovableEntity {
     private final Direction playerDirection;
@@ -12,11 +15,15 @@ public class Ball extends MovableEntity {
     private final long creationTime;
     private int speed;
     private boolean isOutOfBounds = false;
+    private String AMMO_PATH="images/Ammo.png";
+    private BufferedImage image;
+    private Image[] ammoAnimations;
 
     public Ball(Player player) {
         playerDirection = player.getDirection();
         creationTime = System.currentTimeMillis(); // Initialisation du temps de création
         initialize(player);
+        load();
         speed = 6;
     }
     public Ball(Player player, int speed) {
@@ -25,6 +32,28 @@ public class Ball extends MovableEntity {
         initialize(player);
         this.speed = speed;
     }
+    private void load() {
+        loadAnimationFrames();
+
+        loadSpriteSheet();
+
+    }
+
+    private void loadAnimationFrames() {
+        try {
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(AMMO_PATH));
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement du sprite sheet : " + e.getMessage());
+        }
+    }
+
+    private void loadSpriteSheet() {
+        ammoAnimations = new Image[4];
+        ammoAnimations[0] = image.getSubimage(0, 50*2, 50, 50);
+
+    }
+
+
 
 
     private void initialize(Player player) {
@@ -77,7 +106,7 @@ public class Ball extends MovableEntity {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawCircle(x,y,10, Color.WHITE);
+        canvas.drawImage(ammoAnimations[0],x,y);
     }
 
     public boolean getIsOutOfBounds() {
