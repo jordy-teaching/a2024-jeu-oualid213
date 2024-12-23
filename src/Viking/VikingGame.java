@@ -2,7 +2,6 @@ package Viking;
 
 import Doctrina.Canvas;
 import Doctrina.Game;
-import Doctrina.RenderingEngine;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -33,7 +32,7 @@ public class VikingGame extends Game {
         try {
             Clip clip = AudioSystem.getClip();
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-                    getClass().getClassLoader().getResourceAsStream("audios/music.wav")
+                    getClass().getClassLoader().getResourceAsStream("audios/NotImportant+.wav")
             );
             clip.open(audioInputStream);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -42,7 +41,7 @@ public class VikingGame extends Game {
             e.printStackTrace();
         }
 
-        RenderingEngine.getInstance().getScreen().fullscreen();
+      //  RenderingEngine.getInstance().getScreen().fullscreen();
         //RenderingEngine.getInstance().getScreen().hideCursor();
     }
 

@@ -10,10 +10,10 @@ public class MovementController extends Controller {
     private int rightKey = KeyEvent.VK_RIGHT;
 
     public MovementController() {
-        bindKey(upKey);
-        bindKey(downKey);
-        bindKey(leftKey);
-        bindKey(rightKey);
+        findKey(upKey);
+        findKey(downKey);
+        findKey(leftKey);
+        findKey(rightKey);
     }
 
     public void useWasdKeys() {
@@ -33,6 +33,7 @@ public class MovementController extends Controller {
         if (isUpPressed()) {
             return Direction.UP;
         }
+
         if (isDownPressed()) {
             return Direction.DOWN;
         }
@@ -62,25 +63,25 @@ public class MovementController extends Controller {
 
     public void setDownKey(int keyCode) {
         unbindKey(downKey);
-        bindKey(keyCode);
+        findKey(keyCode);
         this.downKey = keyCode;
     }
 
     public void setUpKey(int keyCode) {
         unbindKey(upKey);
-        bindKey(keyCode);
+        findKey(keyCode);
         this.upKey = keyCode;
     }
 
     public void setLeftKey(int keyCode) {
         unbindKey(leftKey);
-        bindKey(keyCode);
+        findKey(keyCode);
         this.leftKey = keyCode;
     }
 
     public void setRightKey(int keyCode) {
         unbindKey(rightKey);
-        bindKey(keyCode);
+        findKey(keyCode);
         this.rightKey = keyCode;
     }
 }

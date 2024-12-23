@@ -10,6 +10,7 @@ public class Screen {
     private Cursor invisibleCursor;
     private GraphicsDevice device;
     private DisplayMode fullscreenDisplayMode;
+    private DisplayMode windowedDisplayMode;
     private boolean isFullscreenMode;
 
     public Screen() {
@@ -45,7 +46,7 @@ public class Screen {
         if (frameIsVisible) {
             frame.setVisible(true);
         }
-        //fullscreenDisplayMode = findClosestDisplayMode(width, height);
+        fullscreenDisplayMode = findClosestDisplayMode(width, height);
         System.out.println("Fullscreen Mode: " + fullscreenDisplayMode.getWidth() + "x" + fullscreenDisplayMode.getHeight());
     }
 
@@ -64,19 +65,28 @@ public class Screen {
     public void fullscreen() {
         if (device.isFullScreenSupported()) {
             device.setFullScreenWindow(frame);
+            frame.setUndecorated(true);
+            frame.setResizable(false);
         }
-        //device.setDisplayMode(fullscreenDisplayMode);
+        device.setDisplayMode(fullscreenDisplayMode);
         frame.setLocationRelativeTo(null);
         isFullscreenMode = true;
     }
 
     public void windowed() {
         if (device.isFullScreenSupported()) {
-            device.setFullScreenWindow(null);
+            device.setFullScreenWindow(null); // Exit fullscreen mode
         }
-        //device.setDisplayMode(windowedDisplayMode);
+        device.setDisplayMode(windowedDisplayMode);
         frame.setLocationRelativeTo(null);
+        frame.setUndecorated(false); // Re-enable window decorations
+        frame.setResizable(true); // Re-enable resizing
         isFullscreenMode = false;
+    }
+
+    // New method to get the screen size
+    public Dimension getScreenSize() {
+        return Toolkit.getDefaultToolkit().getScreenSize();
     }
 
     private DisplayMode findClosestDisplayMode(int width, int height) {
@@ -122,6 +132,6 @@ public class Screen {
     private void initializeDevice() {
         device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         fullscreenDisplayMode = device.getDisplayMode();
-        // windowedDisplayMode = device.getDisplayMode();
+        windowedDisplayMode = device.getDisplayMode();
     }
 }
