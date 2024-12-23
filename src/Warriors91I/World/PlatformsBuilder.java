@@ -103,10 +103,6 @@ public class PlatformsBuilder {
             }
         }
     }
-
-    public void drawMap(Canvas canvas) {
-    }
-
     public boolean isInDeathZone(StaticEntity entity){
         System.out.println(deathPlatforms.size());
         for (Platform platform : deathPlatforms) {
@@ -116,19 +112,4 @@ public class PlatformsBuilder {
         }
         return false;
     }
-    public boolean drawDeathZone(Canvas canvas){
-
-        return false;
-    }
 }
-
-/*
-* todo list:
-*  i need to find some bugs
-*  *  i need to add the music
-*  i need to refactor all the classes
-*  i need to do some bugs searching
-*  i need to make the menu more sweet
-*  i need to put the game play with the enemies
-*  i need to go to the gym, cause i really need it
-*  i need to sleep, cause its important */

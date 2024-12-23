@@ -13,6 +13,7 @@ import Warriors91I.Objects.Weapon;
 import Warriors91I.Objects.WeaponType;
 import Warriors91I.Utilities.Chronometre;
 import Warriors91I.Utilities.GamePad;
+import Warriors91I.Utilities.Sounds;
 import Warriors91I.World.PlatformsBuilder;
 import Warriors91I.World.World;
 import Warriors91I.Menus.GameOverMenu;
@@ -68,7 +69,7 @@ public class WarriorsGame extends Game {
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
-//        Sounds.MAIN.playLoop();
+        Sounds.MAIN.playLoop();
         shieldInitialization();
     }
 

@@ -25,7 +25,7 @@ public class Ball extends MovableEntity {
         creationTime = System.currentTimeMillis(); // Initialisation du temps de création
         initialize(player);
         load();
-        speed = 6;
+        speed = 15;
     }
     public Ball(Player player, int speed) {
         playerDirection = player.getDirection();
