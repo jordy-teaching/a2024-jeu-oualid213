@@ -98,10 +98,20 @@ public class Player extends ControllableEntity {
         setFrames();
         isPlayerDead();
         consumeShield();
+        teleportToFinal();
+        walkingEffect();
+    }
+
+    private void walkingEffect(){
+        if (hasMoved()){
+            Sounds.WALK.play();
+        }
     }
 
     private void isPlayerDead() {
-        if (health <= 0) {
+        if (health <= 0 || isDead) {
+            Sounds.MURLOC.play();
+
             isDead = true;
         }
     }
@@ -138,12 +148,25 @@ public class Player extends ControllableEntity {
     private void isAttacking() {
         long currentTime = System.currentTimeMillis();
         if (gamePad.isAttackPressed() && !isAttacking && (currentTime - lastMeleeAttackTime >= MELEE_COOLDOWN)) {
+            Sounds.ATTACK.play();
             isAttacking = true;
             attackFrame = 0;
             lastMeleeAttackTime = currentTime; // Update last melee attack time
         } else if (gamePad.isAttackPressed() && (currentTime - lastMeleeAttackTime < MELEE_COOLDOWN)) {
             System.out.println("Melee attack on cooldown! Wait for " + (MELEE_COOLDOWN - (currentTime - lastMeleeAttackTime)) + " ms.");
         }
+    }
+
+    private void teleportToFinal(){
+        if (isInFinalGate()){
+            teleport(6100,1000);
+        }
+    }
+
+    private boolean isInFinalGate(){
+        System.out.println(getX() + " "  + getY());
+
+        return getX() == 5560 && getY() == 732;
     }
 
     @Override
@@ -169,24 +192,6 @@ public class Player extends ControllableEntity {
             }
         }
     }
-
-    public void drawMeleeCooldown(Canvas canvas, Camera camera) {
-        int barWidth = 100;
-        int barHeight = 10;
-
-        int x = camera.getX() + 10;
-        int y = camera.getY() + 60;
-
-        long currentTime = System.currentTimeMillis();
-        int remainingCooldown = (int) Math.max(0, MELEE_COOLDOWN - (currentTime - lastMeleeAttackTime));
-        double cooldownPercentage = 1 - (remainingCooldown / (double) MELEE_COOLDOWN);
-
-        // Draw background
-        canvas.drawRectangle(x, y, barWidth, barHeight, Color.GRAY);
-        // Draw cooldown bar
-        canvas.drawRectangle(x, y, (int) (barWidth * cooldownPercentage), barHeight, Color.YELLOW);
-    }
-
     public void drawHealthBar(Canvas canvas, Camera camera) {
         int barWidth = 200;
         int barHeight = 10;
@@ -267,6 +272,7 @@ public class Player extends ControllableEntity {
     public Ball shoot() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastShootTime >= SHOOT_COOLDOWN) {
+            Sounds.WEAPON.play();
             lastShootTime = currentTime;
             return new Ball(this);
         }

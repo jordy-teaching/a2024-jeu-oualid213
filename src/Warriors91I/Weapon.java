@@ -35,7 +35,7 @@ public class Weapon extends StaticEntity {
     public Weapon(Player player, WeaponType type) {
         teleport(5490, 350);
 
-        setDimension(100, 100);
+        setDimension(100, 128);
         this.player = player;
         this.balls = new BallsManager();
         this.hasWeapon = false;
@@ -78,7 +78,7 @@ public class Weapon extends StaticEntity {
     }
 
     private void getWeapon() {
-        if (gamePad.isConsumePressed()){
+        if (gamePad.isCollectPressed()){
             if (isActive && player.intersectWith(this)) {
                 hasWeapon = true;
                 isActive = false;

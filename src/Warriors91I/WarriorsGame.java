@@ -31,6 +31,12 @@ public class WarriorsGame extends Game {
     @Override
     protected void initialize() {
         initializeMenu();
+        generalInitialization();
+        gameOverMenu = new GameOverMenu(this);
+
+    }
+
+    private void generalInitialization() {
         initializeGamePad();
         initializePlayer();
         initializeEnemies();
@@ -39,15 +45,17 @@ public class WarriorsGame extends Game {
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
+        Sounds.MAIN.playLoop();
 
         shields = new ArrayList<>();
 
-        shields.add(new Shield(100,300));
-        shields.add(new Shield(200,300));
-        shields.add(new Shield(400,300));
+        shields.add(new Shield(3500,-400));
+        shields.add(new Shield(5800,816));
+        shields.add(new Shield(2102,714));
+        shields.add(new Shield(900,747));
+        shields.add(new Shield(3834,869));
 
 
-        gameOverMenu = new GameOverMenu(this);
     }
 
     private void initializeMenu() {
@@ -62,14 +70,7 @@ public class WarriorsGame extends Game {
         player.setHealth();
         player.isAlive();
 
-        initializeEnemies();
-        initializeWeapon();
-        initializePhysicsEntities();
-        initializePlatformBuilder();
-        initializeCamera();
-        initializeWorld();
-
-
+       generalInitialization();
         gameOverMenu.deactivate();
         lastUpdateTime = System.nanoTime();
     }
@@ -255,8 +256,7 @@ public class WarriorsGame extends Game {
 
     @Override
     protected void draw(Canvas canvas) {
-        updateFps(); // Mets à jour le FPS ici
-
+        updateFps();
         if (principalMenu.isActive()) {
             principalMenu.draw(canvas);
         } else if (gameOverMenu.isActive()) {
@@ -316,3 +316,8 @@ public class WarriorsGame extends Game {
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= alertRadius;
     }
 }
+/*
+* ce que je dois faire
+* faire la music
+* faire la condition pour gagner
+* faire le menu qui dit gagné */

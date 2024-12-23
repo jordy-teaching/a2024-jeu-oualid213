@@ -22,6 +22,7 @@ public class World {
             "images/tiles4.png",
             "images/tiles5.png",
             "images/tiles6.png",
+            "images/tiles15.png",
             "images/tiles8.png",
             "images/tiles9.png",
             "images/tiles10.png",
@@ -29,6 +30,7 @@ public class World {
             "images/tiles12.png",
             "images/tiles13.png",
             "images/tiles14.png",
+            "images/tiles22.png",
             "images/tiles15.png",
             "images/tiles16.png",
             "images/tiles17.png",
@@ -73,9 +75,9 @@ public class World {
 
         drawRepeatedImage(canvas, background, 1920 * 5, 600);
 
-        drawLevelSet(canvas, 0, 7, 0, 800);
-        drawLevelSet(canvas, 14, levels.size(), -600, 800);
-        drawLevelSetWithOverrides(canvas, 7, 14, 600, 800);
+        drawLevelSet(canvas, 0, 8, 0, 800);
+        drawLevelSet(canvas, 16, levels.size(), -600, 800);
+        drawLevelSetWithOverrides(canvas, 8, 16, 600, 800);
     }
 
     private void drawRepeatedImage(Canvas canvas, Image image, int width, int yPosition) {
@@ -95,15 +97,17 @@ public class World {
     private void drawLevelSetWithOverrides(Canvas canvas, int startIndex, int endIndex, int yPosition, int xIncrement) {
         int xOffset = 0;
         for (int i = startIndex; i < endIndex; i++) {
-            if (i == 8) {
+            if (i == 9) {
                 canvas.drawImage(level9, xOffset, yPosition);
-            } else if (i == 7) {
+            } else if (i == 8) {
                 canvas.drawImage(level8, xOffset, yPosition);
             }
                 canvas.drawImage(levels.get(i), xOffset, yPosition);
-
 
             xOffset += xIncrement;
         }
     }
 }
+/*
+*
+* ajouter la music*/

@@ -38,6 +38,8 @@ public class PlatformsBuilder {
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid12.csv"));
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid13.csv"));
         maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid14.csv"));
+        maps2.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid22.csv"));
+
 
         maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid15.csv"));
         maps3.add(FileLoader.loadCsvFile(55, 50, "resources/IntGrid16.csv"));
@@ -120,13 +122,6 @@ public class PlatformsBuilder {
 
 /*
 * todo list:
-*  i need to finish the map (potable) ---
-*  i need to debug them ---
-*  i need to do some refactoring ---
-*  i need to put it full screen (---)
-*  i need to put the object in the map
-*  i need to put the child
-*  i need to do the final boss
 *  i need to find some bugs
 *  *  i need to add the music
 *  i need to refactor all the classes
