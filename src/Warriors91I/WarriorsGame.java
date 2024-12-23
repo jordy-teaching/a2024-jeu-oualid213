@@ -15,12 +15,13 @@ public class WarriorsGame extends Game {
     private PlatformsBuilder platformBuilder;
     private Camera camera;
     private Weapon weapon;
+    private ArrayList<Shield> shields;
     private ArrayList<Enemy> enemies;
     private ArrayList<Physics> physicsEntities;
     private static final int PLAYER_START_X = 250;
     private static final int PLAYER_START_Y = 250;
-    private static final int TARGET_FPS = 200;  // Fréquence cible de 60 FPS
-    private static final long OPTIMAL_TIME_PER_FRAME = 1000000000 / TARGET_FPS;  // Nanosecondes par frame
+    private static final int TARGET_FPS = 200;
+    private static final long OPTIMAL_TIME_PER_FRAME = 1000000000 / TARGET_FPS;
     private long lastUpdateTime = System.nanoTime();
     private long lastFpsUpdateTime = System.nanoTime();
     private int fpsCount = 0;
@@ -38,6 +39,14 @@ public class WarriorsGame extends Game {
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
+
+        shields = new ArrayList<>();
+
+        shields.add(new Shield(100,300));
+        shields.add(new Shield(200,300));
+        shields.add(new Shield(400,300));
+
+
         gameOverMenu = new GameOverMenu(this);
     }
 
@@ -76,9 +85,19 @@ public class WarriorsGame extends Game {
         } else {
             enemies.clear();
         }
-        enemies.add(new Ghost(100, 300));
-        enemies.add(new Zombie(100, 300));
-        enemies.add(new Ghost(1200, 300));
+        enemies.add(new Zombie(1300, 230));
+        //enemies.add(new Monster(600, 230));
+
+        enemies.add(new Zombie(1700, 230));
+        enemies.add(new Zombie(2800, 300));
+        enemies.add(new Ghost(2700, 350));
+        enemies.add(new Ghost(5490, 300));
+
+        enemies.add(new Ghost(300, 1000));
+        enemies.add(new Ghost(2000, 800));
+        enemies.add(new Ghost(4200, 1000));
+        enemies.add(new Zombie(4200, 1000));
+
     }
 
     private void initializeWeapon() {
@@ -125,14 +144,13 @@ public class WarriorsGame extends Game {
                 handelPlayerStat();
             }
 
-            lastUpdateTime = now; // Met à jour le dernier temps de mise à jour
+            lastUpdateTime = now;
         }
 
-        // Calcul du temps de pause pour limiter les FPS
         long sleepTime = OPTIMAL_TIME_PER_FRAME - (System.nanoTime() - now);
         if (sleepTime > 0) {
             try {
-                Thread.sleep(sleepTime / 1_000_000); // Convertit en millisecondes
+                Thread.sleep(sleepTime / 1_000_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -161,13 +179,14 @@ public class WarriorsGame extends Game {
         handleJump();
         player.update();
         weapon.update();
+        handelShield();
     }
 
     private void updateFps() {
         long now = System.nanoTime();
         fpsCount++;
 
-        if (now - lastFpsUpdateTime >= 1_000_000_000) { // Mise à jour toutes les secondes
+        if (now - lastFpsUpdateTime >= 1_000_000_000) {
             currentFps = fpsCount;
             fpsCount = 0;
             lastFpsUpdateTime = now;
@@ -204,6 +223,24 @@ public class WarriorsGame extends Game {
         }
     }
 
+
+    private void handelShield() {
+
+        if (gamePad.isCollectPressed()) {
+            for (Iterator<Shield> iterator = shields.iterator(); iterator.hasNext(); ) {
+                Shield shield = iterator.next();
+
+                if(player.intersectWith(shield)){
+                    player.collectShield(shield);
+                    iterator.remove();
+                    break;
+
+                }
+            }
+        }
+    }
+
+
     private void applyPhysics() {
         for (Physics physics : physicsEntities) {
             physics.applyGravity();
@@ -237,6 +274,10 @@ public class WarriorsGame extends Game {
 
             player.draw(canvas);
             weapon.draw(canvas);
+
+            for (Shield shield: shields) {
+                shield.draw(canvas);
+            }
 
             drawStatusBar(canvas, 5, System.nanoTime() - lastUpdateTime);
 

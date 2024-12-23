@@ -6,6 +6,9 @@ public class Zombie extends Enemy{
     public Zombie(int x, int y) {
         super(x, y);
         speed =1;
+        DAMAGE = 7;
+        SPRITE_PATH =  "images/player.png";
+        loadSprites();
     }
 
     @Override

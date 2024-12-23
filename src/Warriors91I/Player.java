@@ -7,15 +7,20 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends ControllableEntity {
     private static final String SPRITE_PATH = "images/player_sprites.png";
 
     private static final int ANIMATION_SPEED = 8;
-    private static final int DAMAGE = 1;
-    private static final int SHOOT_COOLDOWN = 250;
+    private static final int DAMAGE = 10;
+
+    private static final int SHOOT_COOLDOWN = 250; // Cooldown for shooting
+    private static final int MELEE_COOLDOWN = 300; // Cooldown for melee attacks
 
     private long lastShootTime = 0;
+    private long lastMeleeAttackTime = 0; // Tracks the last melee attack time
     private GamePad gamePad;
 
     private BufferedImage image;
@@ -35,6 +40,9 @@ public class Player extends ControllableEntity {
     private boolean jump = false;
     private int animationStep = 1;
 
+    // Inventory for Shields
+    private List<Shield> inventory = new ArrayList<>();
+
     public Player(MovementController controller) {
         super(controller);
         setDimension(30, 30);
@@ -48,6 +56,7 @@ public class Player extends ControllableEntity {
         loadSpriteSheet();
         loadAnimationFrames();
     }
+
     public void die() {
         this.health = 0;
     }
@@ -88,14 +97,16 @@ public class Player extends ControllableEntity {
         setAttackFramesAnimation();
         setFrames();
         isPlayerDead();
+        consumeShield();
     }
 
     private void isPlayerDead() {
-        if(health<=0){
+        if (health <= 0) {
             isDead = true;
         }
     }
-    public boolean dead(){
+
+    public boolean dead() {
         return isDead;
     }
 
@@ -125,9 +136,13 @@ public class Player extends ControllableEntity {
     }
 
     private void isAttacking() {
-        if (gamePad.isAttackPressed() && !isAttacking) {
+        long currentTime = System.currentTimeMillis();
+        if (gamePad.isAttackPressed() && !isAttacking && (currentTime - lastMeleeAttackTime >= MELEE_COOLDOWN)) {
             isAttacking = true;
             attackFrame = 0;
+            lastMeleeAttackTime = currentTime; // Update last melee attack time
+        } else if (gamePad.isAttackPressed() && (currentTime - lastMeleeAttackTime < MELEE_COOLDOWN)) {
+            System.out.println("Melee attack on cooldown! Wait for " + (MELEE_COOLDOWN - (currentTime - lastMeleeAttackTime)) + " ms.");
         }
     }
 
@@ -153,17 +168,31 @@ public class Player extends ControllableEntity {
                 canvas.drawImage(frameToDraw, x, y, getWidth() * 2, getHeight() * 2);
             }
         }
-
     }
 
+    public void drawMeleeCooldown(Canvas canvas, Camera camera) {
+        int barWidth = 100;
+        int barHeight = 10;
 
+        int x = camera.getX() + 10;
+        int y = camera.getY() + 60;
+
+        long currentTime = System.currentTimeMillis();
+        int remainingCooldown = (int) Math.max(0, MELEE_COOLDOWN - (currentTime - lastMeleeAttackTime));
+        double cooldownPercentage = 1 - (remainingCooldown / (double) MELEE_COOLDOWN);
+
+        // Draw background
+        canvas.drawRectangle(x, y, barWidth, barHeight, Color.GRAY);
+        // Draw cooldown bar
+        canvas.drawRectangle(x, y, (int) (barWidth * cooldownPercentage), barHeight, Color.YELLOW);
+    }
 
     public void drawHealthBar(Canvas canvas, Camera camera) {
         int barWidth = 200;
         int barHeight = 10;
 
         int x = camera.getX() + 10;
-        int y = camera.getY() + 20 ;
+        int y = camera.getY() + 20;
 
         canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
         canvas.drawRectangle(x, y, barWidth, barHeight, Color.RED);
@@ -175,7 +204,7 @@ public class Player extends ControllableEntity {
         int barHeight = 10;
 
         int x = camera.getX() + 10;
-        int y = camera.getY() + 40 ;
+        int y = camera.getY() + 40;
 
         canvas.drawRectangle(x, y, barWidth + 1, barHeight + 1, Color.BLACK);
         canvas.drawRectangle(x, y, barWidth, barHeight, Color.BLUE);
@@ -205,6 +234,32 @@ public class Player extends ControllableEntity {
         return shield;
     }
 
+    public void collectShield(Shield shieldItem) {
+        inventory.add(shieldItem);
+    }
+
+    public void consumeShield() {
+        if (gamePad.isConsumePressed()) {
+            if (!inventory.isEmpty()) {
+                Shield shieldItem = inventory.remove(0);
+                shield += shieldItem.getHeal();
+                if (shield > MAX_SHIELD) {
+                    shield = MAX_SHIELD;
+                }
+            } else {
+                System.out.println("No shields available to consume!");
+            }
+        }
+    }
+
+    public void setHealth() {
+        health = 100;
+    }
+
+    public void isAlive() {
+        isDead = false;
+    }
+
     public int getAttackDamage() {
         return DAMAGE;
     }
@@ -218,11 +273,5 @@ public class Player extends ControllableEntity {
         return null;
     }
 
-    public void setHealth() {
-        health = 100;
-    }
-
-    public void isAlive() {
-        isDead = false;
-    }
 }
+

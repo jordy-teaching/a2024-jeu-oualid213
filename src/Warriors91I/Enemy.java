@@ -11,19 +11,19 @@ import java.io.IOException;
 
 public abstract class Enemy extends MovableEntity {
     private static final int CHANGE_DIRECTION_THRESHOLD = 100;
-    private static final String SPRITE_PATH = "images/player.png";
-    private static final int FRAME_WIDTH = 32;
-    private static final int FRAME_HEIGHT = 32;
+    protected   String SPRITE_PATH;
+    protected static final int FRAME_WIDTH = 32;
+    protected static final int FRAME_HEIGHT = 32;
     private static final int FRAMES_PER_DIRECTION = 3;
     private static final int ANIMATION_SPEED = 8;
-    private static final int ATTACK_COOLDOWN = 500;
-    private static final int DAMAGE = 1;
+    private static final int ATTACK_COOLDOWN = 700;
+    protected int DAMAGE ;
     private static final int MIN_ATTACK_DISTANCE = 30;
 
-    private long lastAttackTime = 0;
+    protected long lastAttackTime = 0;
     private int health = 100;
     private int moveCounter = 0;
-    private int currentAnimationFrame = 0;
+    protected int currentAnimationFrame = 0;
     private int animationTimer = 0;
 
     protected int speed;
@@ -40,9 +40,9 @@ public abstract class Enemy extends MovableEntity {
     public Enemy(int x, int y) {
         super();
         setDimension(FRAME_WIDTH, FRAME_HEIGHT);
+
         teleport(x, y);
         setSpeed(speed);
-        loadSprites();
     }
 
     public void moveTowardsPlayer(Player player) {
@@ -100,7 +100,7 @@ public abstract class Enemy extends MovableEntity {
         drawHealthBar(canvas);
     }
 
-    private void loadSprites() {
+    protected void loadSprites() {
         try {
             spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream(SPRITE_PATH));
             loadAnimationFrames();
@@ -127,7 +127,7 @@ public abstract class Enemy extends MovableEntity {
         setDirection(directions[(int) (Math.random() * directions.length)]);
     }
 
-    private Image[] getCurrentAnimationFrames() {
+    protected Image[] getCurrentAnimationFrames() {
         return switch (getDirection()) {
             case LEFT -> leftFrames;
             case RIGHT -> rightFrames;
@@ -137,7 +137,7 @@ public abstract class Enemy extends MovableEntity {
         };
     }
 
-    private void drawHealthBar(Canvas canvas) {
+    void drawHealthBar(Canvas canvas) {
         int barWidth = FRAME_WIDTH * 2;
         int barHeight = 5;
 

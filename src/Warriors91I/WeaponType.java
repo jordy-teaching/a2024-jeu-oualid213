@@ -3,7 +3,7 @@ package Warriors91I;
 public enum WeaponType {
     GUN(10, "Gun"),
     BOW(15, "Bow"),
-    FLAME_THROWER(25, "Flame Thrower");
+    FLAME_THROWER(50, "Flame Thrower");
 
     private final int damage;
     private final String weaponLink;

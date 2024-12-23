@@ -4,6 +4,9 @@ public class Ghost extends Enemy {
     public Ghost(int x, int y) {
         super(x, y);
         speed = 4;
+        DAMAGE = 15;
+        SPRITE_PATH =  "images/player.png";
+        loadSprites();
     }
 
 

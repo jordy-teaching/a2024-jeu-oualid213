@@ -16,6 +16,7 @@ public class Weapon extends StaticEntity {
 
     private boolean hasWeapon;
     private boolean isActive = true;
+    private GamePad gamePad;
     private WeaponType currentWeapon;
 
     BufferedImage image;
@@ -32,21 +33,22 @@ public class Weapon extends StaticEntity {
     }
 
     public Weapon(Player player, WeaponType type) {
-       // teleport(5511, 370);
-        teleport(400, 250);
+        teleport(5490, 350);
 
-        setDimension(50, 50);
+        setDimension(100, 100);
         this.player = player;
         this.balls = new BallsManager();
         this.hasWeapon = false;
         this.currentWeapon = type;
+        gamePad = new GamePad();
+        load();
     }
+
+
 
     private void load() {
         loadAnimationFrames();
-
         loadSpriteSheet();
-
     }
 
     private void loadAnimationFrames() {
@@ -58,7 +60,7 @@ public class Weapon extends StaticEntity {
     }
 
     private void loadSpriteSheet() {
-        weaponImage= image.getSubimage(0, 0, 100, 100);
+        weaponImage= image.getSubimage(40, 10*7 - 5, 45, 20);
     }
 
     public void update() {
@@ -76,10 +78,13 @@ public class Weapon extends StaticEntity {
     }
 
     private void getWeapon() {
-        if (isActive && player.intersectWith(this)) {
-            hasWeapon = true;
-            isActive = false;
+        if (gamePad.isConsumePressed()){
+            if (isActive && player.intersectWith(this)) {
+                hasWeapon = true;
+                isActive = false;
+            }
         }
+
     }
 
     public void handleWeaponAttack(GamePad gamePad, ArrayList<Enemy> enemies) {
@@ -114,3 +119,8 @@ public class Weapon extends StaticEntity {
 
 
 }
+
+/*
+* faire le boss final
+* faire les bruit
+* debug */
