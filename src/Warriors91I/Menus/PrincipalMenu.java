@@ -1,15 +1,15 @@
-package Warriors91I;
+package Warriors91I.Menus;
 
 import Doctrina.Canvas;
+import Warriors91I.Menu;
+
 import java.awt.Color;
-import java.util.ArrayList;
 
 public final class PrincipalMenu extends Menu {
 
-    private static final int SPACING = 15; // Spacing between menu options
-    private static final long COOLDOWN_TIME = 200; // Cooldown for input
-    private static final int MENU_WIDTH = 350; // Width of the menu
-    private static final int MENU_HEIGHT = 50; // Height of each option
+    private static final int SPACING = 15;
+    private static final int MENU_WIDTH = 350;
+    private static final int MENU_HEIGHT = 50;
 
     public PrincipalMenu() {
         super();
@@ -33,7 +33,7 @@ public final class PrincipalMenu extends Menu {
                 active = false;
                 break;
             case "Options":
-                System.out.println("Options menu not implemented yet!");
+                System.out.println("Options menu not implemented yet, one day");
                 break;
             case "Exit":
                 System.exit(0);

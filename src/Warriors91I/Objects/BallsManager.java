@@ -1,11 +1,11 @@
 
-package Warriors91I;
+package Warriors91I.Objects;
 
 import Doctrina.Canvas;
+import Warriors91I.Entities.Enemy;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 public class BallsManager {
     private ArrayList<Ball> balls;
@@ -14,7 +14,7 @@ public class BallsManager {
 
     public BallsManager() {
         balls = new ArrayList<>();
-        this.ballNumber = new Random().nextInt(50,101);
+        this.ballNumber = 80;
     }
     public void addBall(Ball weapon) {
         balls.add(weapon);

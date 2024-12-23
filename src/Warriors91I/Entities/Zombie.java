@@ -1,6 +1,9 @@
-package Warriors91I;
+package Warriors91I.Entities;
 
-public class Zombie extends Enemy{
+public class Zombie extends Enemy {
+
+
+    private int points = 100;
 
 
     public Zombie(int x, int y) {

@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.World;
 
 public enum PlatformType {
     WALL,           // Murs verticaux

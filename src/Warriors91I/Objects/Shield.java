@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.Objects;
 
 import Doctrina.Canvas;
 import Doctrina.StaticEntity;
@@ -42,7 +42,7 @@ public class Shield extends StaticEntity {
         try {
             image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/Shield.png"));
         } catch (IOException e) {
-            System.err.println("Erreur lors du chargement du sprite sheet : " + e.getMessage());
+            System.err.println(" sprite sheet error  : " + e.getMessage());
         }
     }
 

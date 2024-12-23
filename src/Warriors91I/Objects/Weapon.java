@@ -1,7 +1,10 @@
-package Warriors91I;
+package Warriors91I.Objects;
 
 import Doctrina.Canvas;
 import Doctrina.StaticEntity;
+import Warriors91I.Entities.Enemy;
+import Warriors91I.Entities.Player;
+import Warriors91I.Utilities.GamePad;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -33,8 +36,6 @@ public class Weapon extends StaticEntity {
         gamePad = new GamePad();
         load();
     }
-
-
 
     private void load() {
         loadAnimationFrames();
@@ -109,11 +110,4 @@ public class Weapon extends StaticEntity {
 
         balls.drawBalls(canvas);
     }
-
-
 }
-
-/*
-* faire le boss final
-* faire les bruit
-* debug */

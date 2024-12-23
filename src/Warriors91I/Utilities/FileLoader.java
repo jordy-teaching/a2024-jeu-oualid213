@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.Utilities;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

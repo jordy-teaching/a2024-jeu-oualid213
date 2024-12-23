@@ -2,6 +2,21 @@ package Warriors91I;
 
 import Doctrina.*;
 import Doctrina.Canvas;
+import Warriors91I.Entities.Enemy;
+import Warriors91I.Entities.Ghost;
+import Warriors91I.Entities.Player;
+import Warriors91I.Entities.Zombie;
+import Warriors91I.Menus.PrincipalMenu;
+import Warriors91I.Menus.WinMenu;
+import Warriors91I.Objects.Shield;
+import Warriors91I.Objects.Weapon;
+import Warriors91I.Objects.WeaponType;
+import Warriors91I.Utilities.Chronometre;
+import Warriors91I.Utilities.GamePad;
+import Warriors91I.World.PlatformsBuilder;
+import Warriors91I.World.World;
+import Warriors91I.Menus.GameOverMenu;
+
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,6 +30,8 @@ public class WarriorsGame extends Game {
     private PlatformsBuilder platformBuilder;
     private Camera camera;
     private Weapon weapon;
+    private GameOverMenu gameOverMenu;
+    private WinMenu winMenu;
     private ArrayList<Shield> shields;
     private ArrayList<Enemy> enemies;
     private ArrayList<Physics> physicsEntities;
@@ -26,13 +43,19 @@ public class WarriorsGame extends Game {
     private long lastFpsUpdateTime = System.nanoTime();
     private int fpsCount = 0;
     private int currentFps = 0;
-    private GameOverMenu gameOverMenu;
+    private Chronometre chronometre;
+
+
 
     @Override
     protected void initialize() {
+
         initializeMenu();
         generalInitialization();
         gameOverMenu = new GameOverMenu(this);
+        chronometre = new Chronometre();
+        chronometre.start();
+                winMenu = new WinMenu(this);
 
     }
 
@@ -74,7 +97,9 @@ public class WarriorsGame extends Game {
         player.setHealth();
         player.isAlive();
 
-       generalInitialization();
+        generalInitialization();
+        chronometre.reset();
+        chronometre.start();
         gameOverMenu.deactivate();
         lastUpdateTime = System.nanoTime();
     }
@@ -95,11 +120,18 @@ public class WarriorsGame extends Game {
 
     private void loadEnemies() {
         enemies.add(new Zombie(1300, 230));
-
+//5800,816
         enemies.add(new Zombie(1700, 230));
         enemies.add(new Zombie(2800, 300));
         enemies.add(new Ghost(2700, 350));
         enemies.add(new Ghost(5490, 300));
+        enemies.add(new Ghost(5800,816));
+        enemies.add(new Ghost(5800,816));
+        enemies.add(new Ghost(5800,816));
+        enemies.add(new Zombie(5800,816));
+        enemies.add(new Zombie(5800,816));
+        enemies.add(new Zombie(5800,8136));
+
 
         enemies.add(new Ghost(300, 1000));
         enemies.add(new Ghost(2000, 800));
@@ -143,22 +175,15 @@ public class WarriorsGame extends Game {
         long elapsedTime = now - lastUpdateTime;
 
         if (elapsedTime >= OPTIMAL_TIME_PER_FRAME) {
-            if (principalMenu.isActive()) {
-                principalMenu.handleInput(gamePad, this);
-            } else if (gameOverMenu.isActive()) {
-                gameOverMenu.handleInput(gamePad, this);
-            } else {
-                if (gamePad.isQuitPressed()) {
-                    stop();
-                }
-
-                handelPlayerStat();
-            }
-
+            gameConditions();
             lastUpdateTime = now;
         }
 
         long sleepTime = OPTIMAL_TIME_PER_FRAME - (System.nanoTime() - now);
+        time(sleepTime);
+    }
+
+    private static void time(long sleepTime) {
         if (sleepTime > 0) {
             try {
                 Thread.sleep(sleepTime / 1_000_000);
@@ -166,6 +191,38 @@ public class WarriorsGame extends Game {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void gameConditions() {
+        if (principalMenu.isActive()) {
+            firstMenu();
+        } else if (gameOverMenu.isActive()) {
+            GameOverMenu();
+
+        } else if (winMenu.isActive()) {
+            winMenu();
+
+        } else {
+            if (gamePad.isQuitPressed()) {
+                chronometre.stop();
+
+                stop();
+            }
+
+            handelPlayerStat();
+        }
+    }
+
+    private void winMenu() {
+        winMenu.handleInput(gamePad, this);
+    }
+
+    private void GameOverMenu() {
+        gameOverMenu.handleInput(gamePad, this);
+    }
+
+    private void firstMenu() {
+        principalMenu.handleInput(gamePad, this);
     }
 
     private void handelPlayerStat() {
@@ -191,6 +248,9 @@ public class WarriorsGame extends Game {
         player.update();
         weapon.update();
         handelShield();
+        if(isEnemiesDied()){
+            winMenu.activate();
+        }
     }
 
     private void updateFps() {
@@ -271,16 +331,16 @@ public class WarriorsGame extends Game {
             principalMenu.draw(canvas);
         } else if (gameOverMenu.isActive()) {
             gameOverMenu.draw(canvas);
+        } else if (winMenu.isActive()) {
+            winMenu.draw(canvas);
         } else {
             canvas.saveState();
 
             canvas.translate(-camera.getX(), -camera.getY());
 
             world.draw(canvas);
-            platformBuilder.drawMap(canvas);
             drawEnemies(canvas);
 
-            platformBuilder.drawDeathZone(canvas);
 
             player.draw(canvas);
             weapon.draw(canvas);
@@ -294,6 +354,14 @@ public class WarriorsGame extends Game {
             canvas.restoreState();
         }
     }
+
+    private boolean isEnemiesDied(){
+        if (enemies.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
 
     private void drawEnemies(Canvas canvas) {
         for (Enemy enemy : enemies) {
@@ -317,19 +385,24 @@ public class WarriorsGame extends Game {
         canvas.drawString("Score: " + score, rectX, camera.getY() + diff, Color.WHITE);
         diff += 20;
 
-        if (weapon.isHasWeapon()){
+        if (weapon.isHasWeapon()) {
             canvas.drawString("Ammo: " + weapon.getNumberOfBall(), rectX, camera.getY() + diff, Color.white);
             diff += 20;
         }
-        if (player.hasShield()){
+        if (player.hasShield()) {
             canvas.drawString("Shields: " + player.shieldNumber(), rectX, camera.getY() + diff, Color.white);
             diff += 20;
         }
-        canvas.drawString("Time: " + (elapsedTime / 1000) + "s", rectX, camera.getY() + diff, Color.WHITE);
+
+        long secondsElapsed = elapsedTime / 1_000_000_000;
+        canvas.drawString("Time: " + chronometre.getElapsedTimeInSeconds()
+
+                + "s", rectX, camera.getY() + diff, Color.WHITE);
         diff += 20;
 
         canvas.drawString("FPS: " + currentFps, rectX, camera.getY() + diff, Color.WHITE);
     }
+
 
     private boolean isPlayerInAlertZone(Enemy enemy, Player player) {
         int alertRadius = 200;
@@ -338,5 +411,3 @@ public class WarriorsGame extends Game {
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= alertRadius;
     }
 }
-/*
-* faire le menu qui dit gagné */

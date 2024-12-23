@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.Objects;
 
 public enum WeaponType {
     GUN(10, "Gun"),

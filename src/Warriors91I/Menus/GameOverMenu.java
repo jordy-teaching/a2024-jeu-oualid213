@@ -1,7 +1,8 @@
-package Warriors91I;
+package Warriors91I.Menus;
 
 import Doctrina.Canvas;
-import Doctrina.Game;
+import Warriors91I.Menu;
+import Warriors91I.WarriorsGame;
 
 import java.awt.*;
 

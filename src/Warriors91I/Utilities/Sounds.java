@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.Utilities;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;

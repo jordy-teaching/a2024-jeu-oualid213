@@ -1,7 +1,11 @@
-package Warriors91I;
+package Warriors91I.Entities;
 
 import Doctrina.*;
 import Doctrina.Canvas;
+import Warriors91I.Utilities.GamePad;
+import Warriors91I.Objects.Ball;
+import Warriors91I.Objects.Shield;
+import Warriors91I.Utilities.Sounds;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

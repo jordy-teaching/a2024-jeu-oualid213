@@ -1,4 +1,4 @@
-package Warriors91I;
+package Warriors91I.Entities;
 
 public class Ghost extends Enemy {
     public Ghost(int x, int y) {

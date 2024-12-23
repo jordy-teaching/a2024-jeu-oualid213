@@ -1,6 +1,8 @@
 package Warriors91I;
 
 import Doctrina.Canvas;
+import Warriors91I.Utilities.GamePad;
+
 import java.awt.*;
 import java.util.ArrayList;
 

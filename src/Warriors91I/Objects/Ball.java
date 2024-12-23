@@ -1,8 +1,9 @@
-package Warriors91I;
+package Warriors91I.Objects;
 
 import Doctrina.Canvas;
 import Doctrina.Direction;
 import Doctrina.MovableEntity;
+import Warriors91I.Entities.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

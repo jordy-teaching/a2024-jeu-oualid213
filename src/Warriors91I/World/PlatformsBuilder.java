@@ -1,8 +1,10 @@
-package Warriors91I;
+package Warriors91I.World;
 
 import Doctrina.Canvas;
 import Doctrina.Physics;
 import Doctrina.StaticEntity;
+import Warriors91I.Utilities.Blockade;
+import Warriors91I.Utilities.FileLoader;
 
 import java.util.ArrayList;
 import java.util.List;
