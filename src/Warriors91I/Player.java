@@ -41,7 +41,7 @@ public class Player extends ControllableEntity {
     private int animationStep = 1;
 
     // Inventory for Shields
-    private List<Shield> inventory = new ArrayList<>();
+    private List<Shield> shields = new ArrayList<>();
 
     public Player(MovementController controller) {
         super(controller);
@@ -104,7 +104,6 @@ public class Player extends ControllableEntity {
 
     private void walkingEffect(){
         if (hasMoved()){
-            Sounds.WALK.play();
         }
     }
 
@@ -155,6 +154,17 @@ public class Player extends ControllableEntity {
         } else if (gamePad.isAttackPressed() && (currentTime - lastMeleeAttackTime < MELEE_COOLDOWN)) {
             System.out.println("Melee attack on cooldown! Wait for " + (MELEE_COOLDOWN - (currentTime - lastMeleeAttackTime)) + " ms.");
         }
+    }
+
+    public int shieldNumber(){
+        return shields.size();
+    }
+
+    public boolean hasShield(){
+        if(shields.isEmpty()){
+            return false;
+        }
+        return true;
     }
 
     private void teleportToFinal(){
@@ -240,13 +250,13 @@ public class Player extends ControllableEntity {
     }
 
     public void collectShield(Shield shieldItem) {
-        inventory.add(shieldItem);
+        shields.add(shieldItem);
     }
 
     public void consumeShield() {
         if (gamePad.isConsumePressed()) {
-            if (!inventory.isEmpty()) {
-                Shield shieldItem = inventory.remove(0);
+            if (!shields.isEmpty()) {
+                Shield shieldItem = shields.remove(0);
                 shield += shieldItem.getHeal();
                 if (shield > MAX_SHIELD) {
                     shield = MAX_SHIELD;

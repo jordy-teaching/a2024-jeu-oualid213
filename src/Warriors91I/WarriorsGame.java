@@ -45,17 +45,21 @@ public class WarriorsGame extends Game {
         initializePlatformBuilder();
         initializeCamera();
         initializeWorld();
-        Sounds.MAIN.playLoop();
+//        Sounds.MAIN.playLoop();
+        shieldInitialization();
+    }
 
+    private void shieldInitialization() {
         shields = new ArrayList<>();
+        loadShields();
+    }
 
+    private void loadShields() {
         shields.add(new Shield(3500,-400));
         shields.add(new Shield(5800,816));
         shields.add(new Shield(2102,714));
         shields.add(new Shield(900,747));
         shields.add(new Shield(3834,869));
-
-
     }
 
     private void initializeMenu() {
@@ -86,8 +90,11 @@ public class WarriorsGame extends Game {
         } else {
             enemies.clear();
         }
+        loadEnemies();
+    }
+
+    private void loadEnemies() {
         enemies.add(new Zombie(1300, 230));
-        //enemies.add(new Monster(600, 230));
 
         enemies.add(new Zombie(1700, 230));
         enemies.add(new Zombie(2800, 300));
@@ -98,12 +105,15 @@ public class WarriorsGame extends Game {
         enemies.add(new Ghost(2000, 800));
         enemies.add(new Ghost(4200, 1000));
         enemies.add(new Zombie(4200, 1000));
-
     }
 
     private void initializeWeapon() {
-        weapon = new Weapon(player, WeaponType.FLAME_THROWER);
+        /* I know it's not the best way to do it, but I did not have enough time to fix it.
+         *I learned from my fault and I did Shield class the right way.
+         * SORRY JORD ! */
+        weapon = new Weapon(player, WeaponType.FLAME_THROWER,5490, 350);
     }
+
 
     private void initializePhysicsEntities() {
         physicsEntities = new ArrayList<>();
@@ -295,7 +305,8 @@ public class WarriorsGame extends Game {
         int rectX = camera.getX() + 10;
         int rectY = 10;
         int rectWidth = 220;
-        int rectHeight = 150;
+        int rectHeight = 170;
+        int diff = 70;
 
         Color semiTransparent = new Color(0, 0, 0, 150);
         canvas.drawRectangle(camera.getX(), camera.getY(), rectWidth, rectHeight, semiTransparent);
@@ -303,10 +314,21 @@ public class WarriorsGame extends Game {
         player.drawHealthBar(canvas, camera);
         player.drawShieldBar(canvas, camera);
 
-        canvas.drawString("Score: " + score, rectX, camera.getY() + 70, Color.WHITE);
-        canvas.drawString("Ammo: " + weapon.getNumberOfBall(), rectX, camera.getY() + 90, Color.white);
-        canvas.drawString("Time: " + (elapsedTime / 1000) + "s", rectX, camera.getY() + 110, Color.WHITE);
-        canvas.drawString("FPS: " + currentFps, rectX, camera.getY() + 130, Color.WHITE);
+        canvas.drawString("Score: " + score, rectX, camera.getY() + diff, Color.WHITE);
+        diff += 20;
+
+        if (weapon.isHasWeapon()){
+            canvas.drawString("Ammo: " + weapon.getNumberOfBall(), rectX, camera.getY() + diff, Color.white);
+            diff += 20;
+        }
+        if (player.hasShield()){
+            canvas.drawString("Shields: " + player.shieldNumber(), rectX, camera.getY() + diff, Color.white);
+            diff += 20;
+        }
+        canvas.drawString("Time: " + (elapsedTime / 1000) + "s", rectX, camera.getY() + diff, Color.WHITE);
+        diff += 20;
+
+        canvas.drawString("FPS: " + currentFps, rectX, camera.getY() + diff, Color.WHITE);
     }
 
     private boolean isPlayerInAlertZone(Enemy enemy, Player player) {
@@ -317,7 +339,4 @@ public class WarriorsGame extends Game {
     }
 }
 /*
-* ce que je dois faire
-* faire la music
-* faire la condition pour gagner
 * faire le menu qui dit gagné */

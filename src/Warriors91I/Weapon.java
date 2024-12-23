@@ -20,20 +20,10 @@ public class Weapon extends StaticEntity {
     private WeaponType currentWeapon;
 
     BufferedImage image;
-
     Image weaponImage;
 
-    public Weapon(Player player) {
-        teleport(400, 250);
-        setDimension(50, 50);
-        this.player = player;
-        this.balls = new BallsManager();
-        this.hasWeapon = false;
-        this.currentWeapon = WeaponType.GUN;
-    }
-
-    public Weapon(Player player, WeaponType type) {
-        teleport(5490, 350);
+    public Weapon(Player player, WeaponType type, int x, int y) {
+        teleport(x, y);
 
         setDimension(100, 128);
         this.player = player;
@@ -106,6 +96,9 @@ public class Weapon extends StaticEntity {
                 }
             }
         }
+    }
+    public boolean isHasWeapon(){
+        return hasWeapon;
     }
 
     public void draw(Canvas canvas) {
